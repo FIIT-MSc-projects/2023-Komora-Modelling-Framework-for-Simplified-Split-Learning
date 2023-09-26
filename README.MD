@@ -1,0 +1,1 @@
+Prototype of split learning based on [SplitLearning-alices](https://github.com/mlpotter/SplitLearning/tree/alices).
