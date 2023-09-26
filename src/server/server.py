@@ -2,13 +2,14 @@ from .data_entities import bob
 import torch.distributed.rpc as rpc
 import os
 
-def init_env(port):
+def init_env(port, address):
     print("Initialize Meetup Spot")
-    os.environ['MASTER_ADDR'] = "localhost"
     os.environ["MASTER_PORT"] = port
+    os.environ['MASTER_ADDR'] = address
+
 
 def start_server(world_size,args):
-    init_env(args.port)
+    init_env(args.port, args.host)
     rpc.init_rpc("bob", rank=0, world_size=world_size)
 
     BOB = bob(args)

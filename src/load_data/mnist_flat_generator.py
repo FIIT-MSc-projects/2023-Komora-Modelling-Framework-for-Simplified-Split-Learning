@@ -23,6 +23,9 @@ def load_mnist_flat(args):
 def load_mnist_image(args):
     dataset = fetch_openml("mnist_784")
 
+    if not os.path.isdir(args.datapath):
+        os.mkdir(args.datapath)
+
     # data = dataset.data.reshape(-1, 1, 28, 28)
     label_list = dataset.target.astype(int).tolist()
     data = pd.DataFrame(dataset.data,columns=dataset.feature_names).values.reshape(-1, 1, 28, 28)

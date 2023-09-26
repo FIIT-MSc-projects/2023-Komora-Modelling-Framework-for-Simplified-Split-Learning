@@ -103,7 +103,7 @@ class alice(object):
 
         format = logging.Formatter("%(asctime)s: %(message)s")
 
-        fh = logging.FileHandler(filename=f"logs/alice{self.client_id}.log",mode='w')
+        fh = logging.FileHandler(filename=f"{os.getenv('log_file')}/alice{self.client_id}.log",mode='w')
         fh.setFormatter(format)
         fh.setLevel(logging.INFO)
 
@@ -155,7 +155,7 @@ class bob(object):
 
         format = logging.Formatter("%(asctime)s: %(message)s")
 
-        fh = logging.FileHandler(filename="logs/bob.log", mode='w')
+        fh = logging.FileHandler(filename=f"{os.getenv('log_file')}/bob.log", mode='w')
         fh.setFormatter(format)
         fh.setLevel(logging.INFO)
 
