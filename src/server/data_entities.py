@@ -11,6 +11,7 @@ import logging
 import os
 from collections import Counter
 from copy import deepcopy
+import pickle
 
 class alice(object):
     def __init__(self,server,bob_model_rrefs,rank,model1,model2,args):
@@ -20,7 +21,11 @@ class alice(object):
 
         self.bob = server
 
-        self.model1 = model1()
+        with open("client_model_1", "rb") as f:
+            client_model_1 = pickle.load(f)
+
+
+        self.model1 = client_model_1()
         self.model2 = model2()
 
         self.criterion = nn.CrossEntropyLoss()

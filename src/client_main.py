@@ -1,10 +1,19 @@
 import argparse
+import os
 from client.client import start_client
 from load_data.mnist_flat_generator import load_mnist_image
 from dotenv import load_dotenv
+import pickle
+
+from models.models import model1
 
 if __name__ == "__main__":
 
+
+    client_model_1 = model1()
+    if not os.path.isfile("client_model_1"):
+        with open("client_model_1", "wb") as f:
+            pickle.dump(client_model_1, f)
     load_dotenv(dotenv_path="client.env")
 
     parser = argparse.ArgumentParser(description='Split Learning Initialization')

@@ -5,14 +5,13 @@ from models.models import *
 from utils.data_structures import dotdict
 from dotenv import load_dotenv
 
-
 if __name__ == "__main__":
 
     load_dotenv(dotenv_path="server.env")
 
     parser = argparse.ArgumentParser(description='Split Learning Initialization')
     parser.add_argument('--world_size',type=int,default=3,help='The world size which is equal to 1 server + (world size - 1) clients')
-    parser.add_argument('--port',type=str,default="8888",help='master port')
+    parser.add_argument('--port',type=str,default="9005",help='master port')
     parser.add_argument('--host',type=str,default="localhost",help='master hostname')    
     params = parser.parse_args()
 
