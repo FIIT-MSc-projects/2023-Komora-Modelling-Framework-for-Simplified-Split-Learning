@@ -13,7 +13,7 @@ import os
 from collections import Counter
 from copy import deepcopy
 
-from model_deserialization import deserialize_model
+from .model_deserialization import deserialize_model
 
 class alice(object):
 

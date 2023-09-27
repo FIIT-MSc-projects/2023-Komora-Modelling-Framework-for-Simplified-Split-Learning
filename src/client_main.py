@@ -1,7 +1,6 @@
 import argparse
 import os
 
-import torch
 from client.client import start_client
 from client.model_serialization import serialize_model
 from load_data.mnist_flat_generator import load_mnist_image
