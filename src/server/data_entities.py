@@ -1,4 +1,5 @@
 import logging
+import sys
 
 import torch.distributed.rpc
 import torch
@@ -11,9 +12,9 @@ import logging
 import os
 from collections import Counter
 from copy import deepcopy
-import pickle
 
 class alice(object):
+    
     def __init__(self,server,bob_model_rrefs,rank,model1,model2,args):
         self.client_id = rank
         self.epochs = args.epochs
@@ -21,12 +22,15 @@ class alice(object):
 
         self.bob = server
 
-        with open("client_model_1", "rb") as f:
-            client_model_1 = pickle.load(f)
-
-
-        self.model1 = client_model_1()
-        self.model2 = model2()
+        try:
+            print(f"Loading {os.getenv('client_model_1_path')}")
+            self.model1 = torch.load(os.getenv('client_model_1_path'))
+            print(f"Loading {os.getenv('client_model_2_path')}")
+            self.model2 = torch.load(os.getenv('client_model_2_path'))
+        except:
+            print("BIG Fail")
+            self.model1 = model1()
+            self.model2 = model2()
 
         self.criterion = nn.CrossEntropyLoss()
 
@@ -38,7 +42,6 @@ class alice(object):
                 )
 
         self.load_data(args)
-
 
     def train(self,last_alice_rref,last_alice_id):
         self.logger.info("Training")
@@ -69,7 +72,6 @@ class alice(object):
                     dist_autograd.backward(context_id, [loss])
 
                     self.dist_optimizer.step(context_id)
-
 
     def give_weights(self):
         return [deepcopy(self.model1.state_dict()), deepcopy(self.model2.state_dict())]
@@ -103,14 +105,23 @@ class alice(object):
         self.logger.info(dict(Counter(self.test_dataloader.dataset[:][1].numpy().tolist())))
 
     def start_logger(self):
+
         self.logger = logging.getLogger(f"alice{self.client_id}")
         self.logger.setLevel(logging.INFO)
 
         format = logging.Formatter("%(asctime)s: %(message)s")
+        log_file_path = os.getenv('log_file')
 
-        fh = logging.FileHandler(filename=f"{os.getenv('log_file')}/alice{self.client_id}.log",mode='w')
+        if not os.path.isdir(log_file_path):
+            os.mkdir(log_file_path)
+
+        fh = logging.FileHandler(filename=f"{log_file_path}/alice{self.client_id}.log",mode='w')
         fh.setFormatter(format)
         fh.setLevel(logging.INFO)
+
+        sh = logging.StreamHandler(sys.stdout)
+        sh.setFormatter(format)
+        sh.setLevel(logging.DEBUG)
 
         self.logger.addHandler(fh)
 
@@ -159,8 +170,12 @@ class bob(object):
         self.logger.setLevel(logging.INFO)
 
         format = logging.Formatter("%(asctime)s: %(message)s")
+        log_file_path = os.getenv('log_file')
 
-        fh = logging.FileHandler(filename=f"{os.getenv('log_file')}/bob.log", mode='w')
+        if not os.path.isdir(log_file_path):
+            os.mkdir(log_file_path)
+
+        fh = logging.FileHandler(filename=f"{log_file_path}/bob.log", mode='w')
         fh.setFormatter(format)
         fh.setLevel(logging.INFO)
 
