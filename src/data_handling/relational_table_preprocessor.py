@@ -1,4 +1,4 @@
-from load_data.noniid_partition import non_iid_partition_with_dirichlet_distribution
+from data_handling.noniid_partition import non_iid_partition_with_dirichlet_distribution
 import pandas as pd
 import numpy as np
 import torch

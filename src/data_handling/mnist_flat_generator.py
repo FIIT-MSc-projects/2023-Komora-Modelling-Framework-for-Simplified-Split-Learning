@@ -1,4 +1,4 @@
-from load_data.relational_table_preprocessor import image_preprocess_dl, relational_table_preprocess_dl
+from data_handling.relational_table_preprocessor import image_preprocess_dl, relational_table_preprocess_dl
 import pandas as pd
 import numpy as np
 import torch

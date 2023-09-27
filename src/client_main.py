@@ -3,10 +3,11 @@ import os
 
 from client.client import start_client
 from client.model_serialization import serialize_model
-from load_data.mnist_flat_generator import load_mnist_image
+from data_handling.mnist_flat_generator import load_mnist_image
 from dotenv import load_dotenv
 
-from models.models import model1, model3
+from models.client_models.client_input_model import input_model
+from models.client_models.client_output_model import output_model
 
 if __name__ == "__main__":
 
@@ -25,8 +26,8 @@ if __name__ == "__main__":
 
     load_dotenv(dotenv_path=args.config)
 
-    serialize_model(model1, os.getenv("client_model_1_path"))
-    serialize_model(model3, os.getenv("client_model_2_path"))
+    serialize_model(input_model, os.getenv("client_model_1_path"))
+    serialize_model(output_model, os.getenv("client_model_2_path"))
 
     load_mnist_image(args)
     start_client(name="alice",rank=int(args.rank),world_size=int(args.clients)+1,port=args.port, address=args.host)

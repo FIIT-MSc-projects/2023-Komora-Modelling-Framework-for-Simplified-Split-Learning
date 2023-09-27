@@ -1,4 +1,4 @@
-from .data_entities import bob
+from .data_entities.simple_server import bob
 import torch.distributed.rpc as rpc
 import os
 
