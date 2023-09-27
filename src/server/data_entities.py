@@ -13,8 +13,10 @@ import os
 from collections import Counter
 from copy import deepcopy
 
+from model_deserialization import deserialize_model
+
 class alice(object):
-    
+
     def __init__(self,server,bob_model_rrefs,rank,model1,model2,args):
         self.client_id = rank
         self.epochs = args.epochs
@@ -24,9 +26,9 @@ class alice(object):
 
         try:
             print(f"Loading {os.getenv('client_model_1_path')}")
-            self.model1 = torch.load(os.getenv('client_model_1_path'))
+            self.model1 = deserialize_model(os.getenv('client_model_1_path'))
             print(f"Loading {os.getenv('client_model_2_path')}")
-            self.model2 = torch.load(os.getenv('client_model_2_path'))
+            self.model2 = deserialize_model(os.getenv('client_model_2_path'))
         except:
             print("BIG Fail")
             self.model1 = model1()

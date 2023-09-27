@@ -1,6 +1,6 @@
 __pycache__/
 logs/
 logs_*/
-data/*
+data/
 client1/
 client2/
