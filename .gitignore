@@ -1,4 +1,6 @@
 __pycache__/
 logs/
 logs_*/
-data/mnist_flat/*
+data/*
+client1/
+client2/
