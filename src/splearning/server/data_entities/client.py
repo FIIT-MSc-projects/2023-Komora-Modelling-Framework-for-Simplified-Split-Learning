@@ -13,16 +13,35 @@ import os
 from collections import Counter
 from copy import deepcopy
 
+from splearning.utils.data_structures import AbstractClient, ClientArguments
+
 from ..model_deserialization import deserialize_model
 
-class alice(object):
 
-    def __init__(self,server,bob_model_rrefs,rank,args):
-        self.client_id = rank
-        self.epochs = args.epochs
+# Client
+# server_reference: RRef, model_rrefs: list, rank: int, epochs, lr, datapath
+
+# From args:
+#   RRef
+#   model_rrefs: list, 
+#   rank: int, 
+#   epochs
+
+# From env:
+#   datapath
+#   lr
+#   momentum
+
+
+class alice(AbstractClient):
+
+    def __init__(self, args: ClientArguments):
+        self.client_id = args.get_rank()
+        self.epochs = args.get_epochs()
         self.start_logger()
 
-        self.bob = server
+        self.server_ref = args.get_server_ref()
+        self.model_rrefs = args.get_model_refs()
 
         try:
             self.logger.info(f"Loading {os.getenv('client_model_1_path')}")
@@ -36,12 +55,12 @@ class alice(object):
 
         self.dist_optimizer=  DistributedOptimizer(
                     torch.optim.SGD,
-                    list(map(lambda x: RRef(x),self.model2.parameters())) +  bob_model_rrefs +  list(map(lambda x: RRef(x),self.model1.parameters())),
-                    lr=args.lr,
-                    momentum = 0.9
+                    list(map(lambda x: RRef(x),self.model2.parameters())) +  self.model_rrefs +  list(map(lambda x: RRef(x),self.model1.parameters())),
+                    lr=os.getenv("lr", 0.001),
+                    momentum=os.getenv("momentum", 0.9)
                 )
 
-        self.load_data(args)
+        self.load_data()
 
     def train(self,last_alice_rref,last_alice_id):
         self.logger.info("Training")
@@ -63,7 +82,7 @@ class alice(object):
                 with dist_autograd.context() as context_id:
 
                     activation_alice1 = self.model1(inputs)
-                    activation_bob = self.bob.rpc_sync().train(activation_alice1) #model(activation_alice1)
+                    activation_bob = self.server_ref.rpc_sync().train(activation_alice1) #model(activation_alice1)
                     activation_alice2 = self.model2(activation_bob)
 
                     loss = self.criterion(activation_alice2,labels)
@@ -85,7 +104,7 @@ class alice(object):
                 images, labels = data
                 # calculate outputs by running images through the network
                 activation_alice1 = self.model1(images)
-                activation_bob = self.bob.rpc_sync().train(activation_alice1)  # model(activation_alice1)
+                activation_bob = self.server_ref.rpc_sync().train(activation_alice1)  # model(activation_alice1)
                 outputs = self.model2(activation_bob)
                 # the class with the highest energy is what we choose as prediction
                 _, predicted = torch.max(outputs.data, 1)
@@ -95,9 +114,11 @@ class alice(object):
         self.logger.info(f"Alice{self.client_id} Evaluating Data: {round(correct / total, 3)}")
         return correct, total
 
-    def load_data(self,args):
-        self.train_dataloader = torch.load(os.path.join(args.datapath ,f"data_worker{self.client_id}_train.pt"))
-        self.test_dataloader = torch.load(os.path.join(args.datapath ,f"data_worker{self.client_id}_test.pt"))
+    def load_data(self):
+
+        datapath = os.getenv("datapath")
+        self.train_dataloader = torch.load(os.path.join(datapath ,f"data_worker{self.client_id}_train.pt"))
+        self.test_dataloader = torch.load(os.path.join(datapath ,f"data_worker{self.client_id}_test.pt"))
 
         self.n_train = len(self.train_dataloader.dataset)
         self.logger.info("Local Data Statistics:")
