@@ -1,8 +1,8 @@
 import argparse
 import os
 
-from client.client import start_client
-from client.model_serialization import serialize_model
+from splearning.client.client import start_client
+from splearning.client.model_serialization import serialize_model
 from data_handling.mnist_flat_generator import load_mnist_image
 from dotenv import load_dotenv
 

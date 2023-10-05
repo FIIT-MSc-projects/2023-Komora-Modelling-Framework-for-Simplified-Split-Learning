@@ -1,8 +1,8 @@
 import argparse
-from server.server import start_server
+from splearning.server.server import start_server
 from models.server_models.simple_server_model import simple_server_model
-from server.data_entities.client import alice
-from utils.data_structures import dotdict
+from splearning.server.data_entities.client import alice
+from splearning.utils.data_structures import dotdict
 from dotenv import load_dotenv
 
 if __name__ == "__main__":
@@ -27,6 +27,7 @@ if __name__ == "__main__":
         'partition_alpha': 0.5,
         'port': params.port,
         'host': params.host,
+        "config": params.config,
         'client': alice
     })
 

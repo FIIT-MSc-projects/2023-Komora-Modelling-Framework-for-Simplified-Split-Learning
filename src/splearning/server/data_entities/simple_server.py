@@ -5,7 +5,6 @@ from torch.distributed.rpc import RRef
 import torch.distributed.rpc as rpc
 import logging
 import os
-from .client import alice
 
 class bob(object):
     def __init__(self,args):
