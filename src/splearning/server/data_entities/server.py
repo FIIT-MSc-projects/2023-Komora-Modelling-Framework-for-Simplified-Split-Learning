@@ -6,24 +6,32 @@ from torch.distributed.rpc import RRef
 import torch.distributed.rpc as rpc
 import logging
 import os
+from splearning.server.data_entities.client import alice
 
-from splearning.utils.data_structures import AbstractServer, StartServerArguments
+from splearning.utils.data_structures import AbstractServer, ClientArguments, StartServerArguments
 
 class bob(AbstractServer):
     def __init__(self, args: StartServerArguments):
 
         self.server_ref = RRef(self)
-        self.model = args.get_server_model()
+        self.model = args.get_server_model()()
         model_rrefs = list(map(lambda x: RRef(x),self.model.parameters()))
 
-        client_name = os.getenv('client', default="alice")
+        client_name = os.getenv('client', default="alice*")
+
+        print(args.get_client())
 
         self.alices = {
             rank+1: rpc.remote(
-                to=client_name.replace("*", rank+1), 
-                func=args.get_client(), 
-                args=(self.server_ref,model_rrefs,rank+1,args.get_epochs())
-            ) for rank in range(args.client_num_in_total)
+                client_name.replace("*", str(rank+1)), 
+                alice, #args.get_client(), 
+                ClientArguments(
+                    server_ref=self.server_ref,
+                    epochs=args.get_epochs(),
+                    model_refs=model_rrefs,
+                    rank=rank+1
+                )
+            ) for rank in range(args.get_client_num_in_total())
         }
 
         self.last_alice_id = None
@@ -32,6 +40,7 @@ class bob(AbstractServer):
 
     def train_request(self,client_id):
         # call the train request from alice
+        print("train request")
         self.logger.info(f"Train Request for Alice{client_id}")
         if self.last_alice_id is None:
             self.alices[client_id].rpc_sync(timeout=0).train(None,None)

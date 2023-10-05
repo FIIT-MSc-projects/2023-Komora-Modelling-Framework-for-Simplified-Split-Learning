@@ -82,10 +82,7 @@ class ServerArguments(dict):
     
     def get_client(self):
         return self.client
-    
-    def get_server(self):
-        return self.server
-    
+
     def get_server_model(self):
         return self.server_model
     

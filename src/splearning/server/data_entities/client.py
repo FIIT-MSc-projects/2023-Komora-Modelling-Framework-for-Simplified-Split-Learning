@@ -33,9 +33,11 @@ from ..model_deserialization import deserialize_model
 #   momentum
 
 
-class alice(AbstractClient):
+class alice(object):
 
-    def __init__(self, args: ClientArguments):
+    def __init__(self, x=1):#, args: ClientArguments):
+        print(x)
+
         self.client_id = args.get_rank()
         self.epochs = args.get_epochs()
         self.start_logger()

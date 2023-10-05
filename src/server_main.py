@@ -13,6 +13,7 @@ if __name__ == "__main__":
     parser.add_argument('--port',type=str,default="9005",help='master port')
     parser.add_argument('--host',type=str,default="localhost",help='master hostname')    
     parser.add_argument('--config',type=str,default="server.env",help='config file path')
+    parser.add_argument('--epochs',type=int,default=1,help='number of training epochs')
     params = parser.parse_args()
 
     args = StartServerArguments(
@@ -23,6 +24,7 @@ if __name__ == "__main__":
         client=alice,
         server=bob,
         server_model=simple_server_model,
+        epochs=params.epochs
     )
 
     start_server(args)
