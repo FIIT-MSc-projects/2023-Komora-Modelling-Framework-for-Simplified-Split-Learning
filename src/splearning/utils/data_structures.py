@@ -36,6 +36,14 @@ class ClientArguments(dict):
     
     def get_epochs(self):
         return self.epochs
+    
+    def to_dict(self):
+        return dotdict({
+            "server_ref": self.server_ref,
+            "model_refs": self.model_refs,
+            "rank": self.rank,
+            "epochs": self.epochs
+        })
 
 class AbstractClient(abc.ABC):
 

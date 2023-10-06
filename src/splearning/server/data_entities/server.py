@@ -23,14 +23,20 @@ class bob(AbstractServer):
 
         self.alices = {
             rank+1: rpc.remote(
-                client_name.replace("*", str(rank+1)), 
+                f"alice{rank+1}", # client_name.replace("*", str(rank+1)), 
                 alice, #args.get_client(), 
-                ClientArguments(
+                (rank+1, ClientArguments(
                     server_ref=self.server_ref,
                     epochs=args.get_epochs(),
                     model_refs=model_rrefs,
                     rank=rank+1
-                )
+                ).to_dict())
+                # ClientArguments(
+                #     server_ref=self.server_ref,
+                #     epochs=args.get_epochs(),
+                #     model_refs=model_rrefs,
+                #     rank=rank+1
+                # )
             ) for rank in range(args.get_client_num_in_total())
         }
 

@@ -35,15 +35,14 @@ from ..model_deserialization import deserialize_model
 
 class alice(object):
 
-    def __init__(self, x=1):#, args: ClientArguments):
-        print(x)
+    def __init__(self, client_id, args):# args: ClientArguments):
 
-        self.client_id = args.get_rank()
-        self.epochs = args.get_epochs()
+        self.client_id = client_id
+        self.epochs = args.epochs
         self.start_logger()
 
-        self.server_ref = args.get_server_ref()
-        self.model_rrefs = args.get_model_refs()
+        self.server_ref = args.server_ref
+        self.model_rrefs = args.model_refs
 
         try:
             self.logger.info(f"Loading {os.getenv('client_model_1_path')}")
@@ -55,11 +54,17 @@ class alice(object):
 
         self.criterion = nn.CrossEntropyLoss()
 
+        lr = os.getenv("lr", 0.001)
+        momentum = os.getenv("momentum", 0.9)
+
+        print(f"lr: {lr}")
+        print(f"momentum: {momentum}")
+
         self.dist_optimizer=  DistributedOptimizer(
                     torch.optim.SGD,
                     list(map(lambda x: RRef(x),self.model2.parameters())) +  self.model_rrefs +  list(map(lambda x: RRef(x),self.model1.parameters())),
-                    lr=os.getenv("lr", 0.001),
-                    momentum=os.getenv("momentum", 0.9)
+                    lr=lr,
+                    momentum=momentum
                 )
 
         self.load_data()
@@ -119,6 +124,7 @@ class alice(object):
     def load_data(self):
 
         datapath = os.getenv("datapath")
+        print(f"datapath: {datapath}")
         self.train_dataloader = torch.load(os.path.join(datapath ,f"data_worker{self.client_id}_train.pt"))
         self.test_dataloader = torch.load(os.path.join(datapath ,f"data_worker{self.client_id}_test.pt"))
 
