@@ -68,6 +68,37 @@ class AbstractClient(abc.ABC):
         pass
 
 
+class StartClientArguments():
+    def __init__(self, name, rank, world_size, port, address, input_model, output_model):
+        self.name = name
+        self.rank = rank
+        self.world_size = world_size
+        self.port = port
+        self.address = address
+        self.input_model = input_model
+        self.output_model = output_model
+
+    def get_name(self):
+        return self.name
+    
+    def get_rank(self):
+        return self.rank
+    
+    def get_world_size(self):
+        return self.world_size
+    
+    def get_port(self):
+        return self.port
+    
+    def get_address(self):
+        return self.address
+    
+    def get_input_model(self):
+        return self.input_model
+    
+    def get_output_model(self):
+        return self.output_model
+
 
 class ServerArguments(dict):
     __getattr__ = dict.get

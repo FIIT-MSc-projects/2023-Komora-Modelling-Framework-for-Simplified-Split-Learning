@@ -2,12 +2,12 @@ import argparse
 import os
 
 from splearning.client.client import start_client
-from splearning.client.model_serialization import serialize_model
 from data_handling.mnist_flat_generator import load_mnist_image
 from dotenv import load_dotenv
 
 from models.client_models.client_input_model import input_model
 from models.client_models.client_output_model import output_model
+from splearning.utils.data_structures import StartClientArguments, dotdict
 
 if __name__ == "__main__":
 
@@ -24,10 +24,23 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     load_dotenv(dotenv_path=args.config)
-    args.datapath = os.getenv("datapath")
 
-    serialize_model(input_model, os.getenv("client_model_1_path"))
-    serialize_model(output_model, os.getenv("client_model_2_path"))
+    data_args = dotdict({
+        'clients': args.clients,
+        'partition_alpha': args.partition_alpha,
+        'datapath': os.getenv("datapath"),
+        'batch_size': args.batch_size,
+    })
 
-    load_mnist_image(args)
-    start_client(name="alice",rank=int(args.rank),world_size=int(args.clients)+1,port=args.port, address=args.host)
+    client_args = StartClientArguments(
+        rank=int(args.rank),
+        name=args.name,
+        world_size=int(args.clients)+1,
+        port=args.port,
+        address=args.host,
+        input_model=input_model,
+        output_model=output_model
+    )
+
+    load_mnist_image(data_args)
+    start_client(client_args)
