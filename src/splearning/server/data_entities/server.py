@@ -78,7 +78,7 @@ class bob(AbstractServer):
         log_file_path = os.getenv('log_file')
 
         if not os.path.isdir(log_file_path):
-            os.mkdir(log_file_path)
+            os.makedirs(log_file_path, exist_ok=True)
 
         fh = logging.FileHandler(filename=f"{log_file_path}/bob.log", mode='w')
         fh.setFormatter(format)

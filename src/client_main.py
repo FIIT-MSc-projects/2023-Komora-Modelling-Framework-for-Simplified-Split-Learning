@@ -14,7 +14,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Split Learning Initialization')
     parser.add_argument('--rank',type=int,default=1,help='Rank of worker')
     parser.add_argument('--name',type=str,default="alice",help='Name of worker')
-    parser.add_argument('--datapath',type=str,default="../data",help='folder path to all the local datasets')
     parser.add_argument('--clients',type=int,default=2,help='The number of clients')
     parser.add_argument('--partition_alpha',type=float,default=0.5,help='Number to describe the uniformity during sampling (heterogenous data generation for LDA)')
     parser.add_argument('--batch_size',type=int,default=16,help='The batch size during the epoch training')
@@ -25,6 +24,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     load_dotenv(dotenv_path=args.config)
+    args.datapath = os.getenv("datapath")
 
     serialize_model(input_model, os.getenv("client_model_1_path"))
     serialize_model(output_model, os.getenv("client_model_2_path"))
