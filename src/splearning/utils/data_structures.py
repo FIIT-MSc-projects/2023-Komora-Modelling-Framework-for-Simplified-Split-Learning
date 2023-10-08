@@ -1,5 +1,4 @@
 import abc
-
 import torch
 
 class dotdict(dict):
@@ -9,9 +8,7 @@ class dotdict(dict):
     __delattr__ = dict.__delitem__
 
 
-
-class ClientArguments(dict):
-    __getattr__ = dict.get
+class ClientArguments():
 
     def __init__(
         self, 
@@ -67,7 +64,6 @@ class AbstractClient(abc.ABC):
     def load_data(self,args):
         pass
 
-
 class StartClientArguments():
     def __init__(self, name, rank, world_size, port, address, input_model, output_model):
         self.name = name
@@ -100,8 +96,7 @@ class StartClientArguments():
         return self.output_model
 
 
-class ServerArguments(dict):
-    __getattr__ = dict.get
+class ServerArguments():
 
     def __init__(
         self,
@@ -146,10 +141,7 @@ class AbstractServer(abc.ABC):
     def train(self,x):
         pass
 
-
-
-class StartServerArguments(dict):
-    __getattr__ = dict.get
+class StartServerArguments():
 
     def __init__(
         self,
