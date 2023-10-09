@@ -13,23 +13,18 @@ class ClientArguments():
     def __init__(
         self, 
         server_ref: torch.RRefType,
-        model_refs: list,
-        rank: int,
+        server_model_refs: list,
         epochs: int
     ):
         self.server_ref = server_ref
-        self.model_refs = model_refs
-        self.rank = rank
+        self.model_refs = server_model_refs
         self.epochs = epochs
 
     def get_server_ref(self):
         return self.server_ref
     
-    def get_model_refs(self):
+    def get_server_model_refs(self):
         return self.model_refs
-    
-    def get_rank(self):
-        return self.rank
     
     def get_epochs(self):
         return self.epochs
@@ -38,7 +33,6 @@ class ClientArguments():
         return dotdict({
             "server_ref": self.server_ref,
             "model_refs": self.model_refs,
-            "rank": self.rank,
             "epochs": self.epochs
         })
 

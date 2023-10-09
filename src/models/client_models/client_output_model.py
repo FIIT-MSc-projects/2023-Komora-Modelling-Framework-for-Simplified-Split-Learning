@@ -9,3 +9,15 @@ class output_model(nn.Module):
     def forward(self, x):
         x = self.fc3(x)
         return x
+    
+class output_model2(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.fc3 = nn.Linear(100, 50)
+        self.fc4 = nn.Linear(50, 10)
+
+    def forward(self, x):
+        x = self.fc3(x)
+        x = self.fc4(x)
+        return x
+    

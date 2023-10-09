@@ -4,8 +4,8 @@ from dotenv import load_dotenv
 
 from splearning.client.client import start_client
 from data_handling.mnist_flat_generator import load_mnist_image
-from models.client_models.client_input_model import input_model
-from models.client_models.client_output_model import output_model
+from models.client_models.client_input_model import input_model, input_model2
+from models.client_models.client_output_model import output_model, output_model2
 from splearning.utils.data_structures import StartClientArguments, dotdict
 
 if __name__ == "__main__":
@@ -38,7 +38,7 @@ if __name__ == "__main__":
         port=args.port,
         address=args.host,
         input_model=input_model,
-        output_model=output_model
+        output_model=output_model2
     )
 
     load_mnist_image(data_args)

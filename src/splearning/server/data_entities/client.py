@@ -5,7 +5,6 @@ import torch.distributed.rpc
 import torch
 import torch.nn as nn
 from torch.distributed.rpc import RRef
-import torch.distributed.rpc as rpc
 import torch.distributed.autograd as dist_autograd
 from torch.distributed.optim import DistributedOptimizer
 import logging
@@ -13,56 +12,40 @@ import os
 from collections import Counter
 from copy import deepcopy
 
-from splearning.utils.data_structures import AbstractClient, ClientArguments
-
-from ..model_deserialization import deserialize_model
-
-
-# Client
-# server_reference: RRef, model_rrefs: list, rank: int, epochs, lr, datapath
-
-# From args:
-#   RRef
-#   model_rrefs: list, 
-#   rank: int, 
-#   epochs
-
-# From env:
-#   datapath
-#   lr
-#   momentum
+from splearning.server.model_deserialization import deserialize_model
+from splearning.utils.data_structures import ClientArguments
 
 
 class alice(object):
 
-    def __init__(self, client_id, args):# args: ClientArguments):
-
+    def __init__(self, client_id, args: ClientArguments):
         self.client_id = client_id
-        self.epochs = args.epochs
+
+        self.epochs = args.get_epochs()
         self.start_logger()
 
-        self.server_ref = args.server_ref
-        self.model_rrefs = args.model_refs
+        self.server_ref = args.get_server_ref()
+        self.server_model_refs = args.get_server_model_refs()
 
         try:
             self.logger.info(f"Loading {os.getenv('client_model_1_path')}")
-            self.model1 = deserialize_model(os.getenv('client_model_1_path'))
+            self.input_model = deserialize_model(os.getenv('client_model_1_path'))
             self.logger.info(f"Loading {os.getenv('client_model_2_path')}")
-            self.model2 = deserialize_model(os.getenv('client_model_2_path'))
+            self.output_model = deserialize_model(os.getenv('client_model_2_path'))
         except:
             self.logger.error("Client models not found")
 
         self.criterion = nn.CrossEntropyLoss()
 
-        lr = os.getenv("lr", 0.001)
-        momentum = os.getenv("momentum", 0.9)
+        lr = float(os.getenv("lr", 0.001))
+        momentum = float(os.getenv("momentum", 0.9))
 
         print(f"lr: {lr}")
         print(f"momentum: {momentum}")
 
         self.dist_optimizer=  DistributedOptimizer(
                     torch.optim.SGD,
-                    list(map(lambda x: RRef(x),self.model2.parameters())) +  self.model_rrefs +  list(map(lambda x: RRef(x),self.model1.parameters())),
+                    list(map(lambda x: RRef(x),self.output_model.parameters())) +  self.server_model_refs +  list(map(lambda x: RRef(x),self.input_model.parameters())),
                     lr=lr,
                     momentum=momentum
                 )
@@ -72,14 +55,14 @@ class alice(object):
     def train(self,last_alice_rref,last_alice_id):
         self.logger.info("Training")
 
-        if last_alice_rref is None:
-            self.logger.info(f"Alice{self.client_id} is first client to train")
+        # if last_alice_rref is None:
+        #     self.logger.info(f"Alice{self.client_id} is first client to train")
 
-        else:
-            self.logger.info(f"Alice{self.client_id} receiving weights from Alice{last_alice_id}")
-            model1_weights,model2_weights = last_alice_rref.rpc_sync().give_weights()
-            self.model1.load_state_dict(model1_weights)
-            self.model2.load_state_dict(model2_weights)
+        # else:
+        #     self.logger.info(f"Alice{self.client_id} receiving weights from Alice{last_alice_id}")
+        #     model1_weights,model2_weights = last_alice_rref.rpc_sync().give_weights()
+        #     self.input_model.load_state_dict(model1_weights)
+        #     self.output_model.load_state_dict(model2_weights)
 
 
         for epoch in range(self.epochs):
@@ -88,11 +71,11 @@ class alice(object):
 
                 with dist_autograd.context() as context_id:
 
-                    activation_alice1 = self.model1(inputs)
-                    activation_bob = self.server_ref.rpc_sync().train(activation_alice1) #model(activation_alice1)
-                    activation_alice2 = self.model2(activation_bob)
+                    input_model_activation = self.input_model(inputs)
+                    server_model_activation = self.server_ref.rpc_sync().train(input_model_activation)
+                    output_model_activation = self.output_model(server_model_activation)
 
-                    loss = self.criterion(activation_alice2,labels)
+                    loss = self.criterion(output_model_activation,labels)
 
                     # run the backward pass
                     dist_autograd.backward(context_id, [loss])
@@ -100,7 +83,7 @@ class alice(object):
                     self.dist_optimizer.step(context_id)
 
     def give_weights(self):
-        return [deepcopy(self.model1.state_dict()), deepcopy(self.model2.state_dict())]
+        return [deepcopy(self.input_model.state_dict()), deepcopy(self.output_model.state_dict())]
 
     def eval(self):
         correct = 0
@@ -110,9 +93,9 @@ class alice(object):
             for data in self.test_dataloader:
                 images, labels = data
                 # calculate outputs by running images through the network
-                activation_alice1 = self.model1(images)
+                activation_alice1 = self.input_model(images)
                 activation_bob = self.server_ref.rpc_sync().train(activation_alice1)  # model(activation_alice1)
-                outputs = self.model2(activation_bob)
+                outputs = self.output_model(activation_bob)
                 # the class with the highest energy is what we choose as prediction
                 _, predicted = torch.max(outputs.data, 1)
                 total += labels.size(0)

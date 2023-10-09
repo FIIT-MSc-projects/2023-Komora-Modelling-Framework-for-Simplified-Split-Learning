@@ -15,7 +15,7 @@ class bob(AbstractServer):
 
         self.server_ref = RRef(self)
         self.model = args.get_server_model()()
-        model_rrefs = list(map(lambda x: RRef(x),self.model.parameters()))
+        server_model_refs = list(map(lambda x: RRef(x),self.model.parameters()))
 
         client_name = os.getenv('client', default="alice*")
 
@@ -23,20 +23,13 @@ class bob(AbstractServer):
 
         self.alices = {
             rank+1: rpc.remote(
-                f"alice{rank+1}", # client_name.replace("*", str(rank+1)), 
-                alice, #args.get_client(), 
+                client_name.replace("*", str(rank+1)), 
+                args.get_client(), 
                 (rank+1, ClientArguments(
                     server_ref=self.server_ref,
                     epochs=args.get_epochs(),
-                    model_refs=model_rrefs,
-                    rank=rank+1
-                ).to_dict())
-                # ClientArguments(
-                #     server_ref=self.server_ref,
-                #     epochs=args.get_epochs(),
-                #     model_refs=model_rrefs,
-                #     rank=rank+1
-                # )
+                    server_model_refs=server_model_refs,
+                ))
             ) for rank in range(args.get_client_num_in_total())
         }
 
