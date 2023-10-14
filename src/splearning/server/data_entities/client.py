@@ -52,35 +52,37 @@ class alice(object):
 
         self.load_data()
 
-    def train(self,last_alice_rref,last_alice_id):
+    def update_model(self,last_alice_rref,last_alice_id):
+        self.logger.info(f"Transfering weights from Alice{last_alice_id} to Alice{self.client_id}")
+        model1_weights,model2_weights = last_alice_rref.rpc_sync().give_weights()
+        self.input_model.load_state_dict(model1_weights)
+        self.output_model.load_state_dict(model2_weights)
+
+    def __forward(self, inputs, labels):
+        # Input client model
+        input_model_activation = self.input_model(inputs) 
+
+        # Server model
+        server_model_activation = self.server_ref.rpc_sync().train(input_model_activation)
+
+        # Output client model
+        output_model_activation = self.output_model(server_model_activation)
+
+        loss = self.criterion(output_model_activation,labels)
+        return loss
+
+    def __backward(self, context_id, loss):
+        dist_autograd.backward(context_id, [loss])
+        self.dist_optimizer.step(context_id)
+
+    def train(self):
         self.logger.info("Training")
 
-        # if last_alice_rref is None:
-        #     self.logger.info(f"Alice{self.client_id} is first client to train")
-
-        # else:
-        #     self.logger.info(f"Alice{self.client_id} receiving weights from Alice{last_alice_id}")
-        #     model1_weights,model2_weights = last_alice_rref.rpc_sync().give_weights()
-        #     self.input_model.load_state_dict(model1_weights)
-        #     self.output_model.load_state_dict(model2_weights)
-
-
-        for epoch in range(self.epochs):
-            for i,data in enumerate(self.train_dataloader):
-                inputs,labels = data
-
-                with dist_autograd.context() as context_id:
-
-                    input_model_activation = self.input_model(inputs)
-                    server_model_activation = self.server_ref.rpc_sync().train(input_model_activation)
-                    output_model_activation = self.output_model(server_model_activation)
-
-                    loss = self.criterion(output_model_activation,labels)
-
-                    # run the backward pass
-                    dist_autograd.backward(context_id, [loss])
-
-                    self.dist_optimizer.step(context_id)
+        for _ in range(self.epochs):
+            for inputs, labels in self.train_dataloader:
+                with dist_autograd.context() as ctx_id:
+                    loss = self.__forward(inputs, labels)
+                    self.__backward(ctx_id, loss)
 
     def give_weights(self):
         return [deepcopy(self.input_model.state_dict()), deepcopy(self.output_model.state_dict())]

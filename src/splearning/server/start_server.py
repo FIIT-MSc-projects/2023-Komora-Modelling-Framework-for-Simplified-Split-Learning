@@ -34,6 +34,7 @@ def start_server(args: StartServerArguments):
         client=args.get_client(),
         epochs=args.get_epochs(),
         server_model=args.get_server_model(),
+        weight_transfer=args.get_weight_transfer()
     )
 
     server = (args.get_server())(server_args)

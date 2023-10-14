@@ -1,5 +1,6 @@
 import abc
 import torch
+from enum import Enum
 
 class dotdict(dict):
     """dot.notation access to dictionary attributes"""
@@ -89,6 +90,12 @@ class StartClientArguments():
     def get_output_model(self):
         return self.output_model
 
+######################################################################################
+
+class ClientWeightTransfer(Enum):
+    NONE = 0
+    CLIENT2CLIENT = 1
+    SERVER2CLIENT = 2
 
 class ServerArguments():
 
@@ -97,12 +104,14 @@ class ServerArguments():
         client_num_in_total: int,
         client: AbstractClient,
         server_model: torch.nn.Module,
-        epochs: int
+        epochs: int,
+        weight_transfer: ClientWeightTransfer
     ):
         self.client_num_in_total = client_num_in_total
         self.client = client
         self.server_model = server_model
         self.epochs = epochs
+        self.weight_transfer = weight_transfer
 
     
     def get_client_num_in_total(self):
@@ -116,6 +125,9 @@ class ServerArguments():
     
     def get_epochs(self):
         return self.epochs
+    
+    def get_weight_transfer(self):
+        return self.weight_transfer
 
 class AbstractServer(abc.ABC):
 
@@ -146,7 +158,8 @@ class StartServerArguments():
         client: AbstractClient,
         server: AbstractServer,
         server_model: torch.nn.Module,
-        epochs: int
+        epochs: int,
+        weight_transfer: ClientWeightTransfer = ClientWeightTransfer.NONE
     ):
         self.port = port
         self.host = host
@@ -156,6 +169,7 @@ class StartServerArguments():
         self.server = server
         self.server_model = server_model
         self.epochs = epochs
+        self.weight_transfer = weight_transfer
 
     def get_port(self):
         return self.port
@@ -183,3 +197,6 @@ class StartServerArguments():
 
     def get_epochs(self):
         return self.epochs
+    
+    def get_weight_transfer(self):
+        return self.weight_transfer

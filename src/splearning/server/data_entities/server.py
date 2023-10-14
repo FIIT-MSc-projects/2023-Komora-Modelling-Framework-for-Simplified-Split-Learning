@@ -8,7 +8,7 @@ import logging
 import os
 from splearning.server.data_entities.client import alice
 
-from splearning.utils.data_structures import AbstractServer, ClientArguments, StartServerArguments
+from splearning.utils.data_structures import AbstractServer, ClientArguments, ClientWeightTransfer, StartServerArguments
 
 class bob(AbstractServer):
     def __init__(self, args: StartServerArguments):
@@ -35,17 +35,34 @@ class bob(AbstractServer):
 
         self.last_alice_id = None
         self.client_num_in_total  = args.get_client_num_in_total()
+        self.weight_transfer = args.get_weight_transfer()
         self.start_logger()
 
     def train_request(self,client_id):
         # call the train request from alice
-        print("train request")
-        self.logger.info(f"Train Request for Alice{client_id}")
+        self.logger.info(f"Train Request for Alice{client_id}, weight transfer strategy: {self.weight_transfer}")
+
+        if self.weight_transfer == ClientWeightTransfer.NONE:
+            self.__train_request_NONE(client_id)
+        if self.weight_transfer == ClientWeightTransfer.CLIENT2CLIENT:
+            self.__train_request_CLIENT2CLIENT(client_id)
+        if self.weight_transfer == ClientWeightTransfer.SERVER2CLIENT:
+            self.__train_request_SERVER2CLIENT(client_id)
+
+    def __train_request_NONE(self, client_id):
+        self.alices[client_id].rpc_sync(timeout=0).train()
+
+    def __train_request_CLIENT2CLIENT(self, client_id):
         if self.last_alice_id is None:
-            self.alices[client_id].rpc_sync(timeout=0).train(None,None)
+            self.alices[client_id].rpc_sync(timeout=0).train()
         else:
-            self.alices[client_id].rpc_sync(timeout=0).train(self.alices[self.last_alice_id],self.last_alice_id)
+            self.alices[client_id].rpc_sync(timeout=0).update_model(self.alices[self.last_alice_id],self.last_alice_id)
+            self.alices[client_id].rpc_sync(timeout=0).train()
+
         self.last_alice_id = client_id
+
+    def __train_request_SERVER2CLIENT(self, client_id):
+        pass
 
     def eval_request(self):
         self.logger.info("Initializing Evaluation of all Alices")
