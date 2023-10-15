@@ -8,6 +8,7 @@ class dotdict(dict):
     __setattr__ = dict.__setitem__
     __delattr__ = dict.__delitem__
 
+########################################### CLIENT ###########################################
 
 class ClientArguments():
 
@@ -44,7 +45,11 @@ class AbstractClient(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def train(self,last_alice_rref,last_alice_id):
+    def update_model(self,last_alice_rref,last_alice_id):
+        pass
+
+    @abc.abstractmethod
+    def train(self):
         pass
 
     @abc.abstractmethod
@@ -90,7 +95,26 @@ class StartClientArguments():
     def get_output_model(self):
         return self.output_model
 
-######################################################################################
+########################################### SERVER STRATEGY ###########################################
+
+class StrategyArguments():
+    def __init__(self):
+        pass
+
+class AbstractServerStrategy(abc.ABC):
+    def __init__(self):
+        pass
+
+    def execute_train_request(self, clients=None, client_id=None):
+        pass
+
+    def execute_eval_request(self, clients=None, total_client_num=None):
+        pass
+
+    def init_clients(self, client_declaration, client_args, client_name_pattern, total_client_number):
+        pass
+
+########################################### SERVER ###########################################
 
 class ClientWeightTransfer(Enum):
     NONE = 0
@@ -105,13 +129,14 @@ class ServerArguments():
         client: AbstractClient,
         server_model: torch.nn.Module,
         epochs: int,
-        weight_transfer: ClientWeightTransfer
+        server_strategy: AbstractServerStrategy,
+
     ):
         self.client_num_in_total = client_num_in_total
         self.client = client
         self.server_model = server_model
         self.epochs = epochs
-        self.weight_transfer = weight_transfer
+        self.server_strategy = server_strategy
 
     
     def get_client_num_in_total(self):
@@ -126,8 +151,8 @@ class ServerArguments():
     def get_epochs(self):
         return self.epochs
     
-    def get_weight_transfer(self):
-        return self.weight_transfer
+    def get_server_strategy(self) -> AbstractServerStrategy:
+        return self.server_strategy
 
 class AbstractServer(abc.ABC):
 
@@ -159,7 +184,7 @@ class StartServerArguments():
         server: AbstractServer,
         server_model: torch.nn.Module,
         epochs: int,
-        weight_transfer: ClientWeightTransfer = ClientWeightTransfer.NONE
+        server_strategy: AbstractServerStrategy,
     ):
         self.port = port
         self.host = host
@@ -169,7 +194,7 @@ class StartServerArguments():
         self.server = server
         self.server_model = server_model
         self.epochs = epochs
-        self.weight_transfer = weight_transfer
+        self.server_strategy = server_strategy
 
     def get_port(self):
         return self.port
@@ -198,5 +223,5 @@ class StartServerArguments():
     def get_epochs(self):
         return self.epochs
     
-    def get_weight_transfer(self):
-        return self.weight_transfer
+    def get_server_strategy(self):
+        return self.server_strategy

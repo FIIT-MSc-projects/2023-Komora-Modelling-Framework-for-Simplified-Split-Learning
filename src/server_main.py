@@ -1,10 +1,9 @@
 import argparse
-from splearning.server.data_entities.server import bob
-from splearning.server.data_entities.client import alice
+from splearning.server.data_entities.server.basic_server import BasicServer, Client2ClientInitializationStrategy
+from splearning.server.data_entities.client.basic_client import BasicClient
 from splearning.server.start_server import start_server
 from models.server_models.simple_server_model import simple_server_model
-from splearning.utils.data_structures import StartServerArguments, dotdict
-from dotenv import load_dotenv
+from splearning.utils.data_structures import ServerArguments, StartServerArguments
 
 if __name__ == "__main__":
 
@@ -21,10 +20,11 @@ if __name__ == "__main__":
         host=params.host,
         config=params.config,
         world_size=params.world_size,
-        client=alice,
-        server=bob,
+        client=BasicClient,
+        server=BasicServer,
         server_model=simple_server_model,
-        epochs=params.epochs
+        epochs=params.epochs,
+        server_strategy=Client2ClientInitializationStrategy
     )
 
     start_server(args)

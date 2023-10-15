@@ -2,6 +2,6 @@ __pycache__/
 logs/
 logs_*/
 data/
-client*/
-server/
+/client*/
+/server/
 dist/

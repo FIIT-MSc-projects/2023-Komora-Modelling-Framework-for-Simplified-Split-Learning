@@ -13,10 +13,10 @@ from collections import Counter
 from copy import deepcopy
 
 from splearning.server.model_deserialization import deserialize_model
-from splearning.utils.data_structures import ClientArguments
+from splearning.utils.data_structures import AbstractClient, ClientArguments
 
 
-class alice(object):
+class BasicClient(AbstractClient):
 
     def __init__(self, client_id, args: ClientArguments):
         self.client_id = client_id

@@ -1,4 +1,4 @@
-from splearning.utils.data_structures import AbstractServer, ServerArguments, StartServerArguments
+from splearning.utils.data_structures import AbstractServer, ServerArguments, ServerArguments, StartServerArguments
 import torch.distributed.rpc as rpc
 import os
 
@@ -34,7 +34,7 @@ def start_server(args: StartServerArguments):
         client=args.get_client(),
         epochs=args.get_epochs(),
         server_model=args.get_server_model(),
-        weight_transfer=args.get_weight_transfer()
+        server_strategy=args.get_server_strategy()
     )
 
     server = (args.get_server())(server_args)
