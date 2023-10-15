@@ -12,12 +12,10 @@ def init_env(port, address):
 
 def server_lifecycle(server: AbstractServer, world_size):
 
-    iterations = os.getenv("iterations", 16)
+    iterations = os.getenv("iterations", 3)
 
     for _ in range(iterations):
         for client_id in range(1, world_size):
-            print("clientID: " + str(client_id)) 
-            print(f"server.train_request({client_id})")
             server.train_request(client_id)
         server.eval_request()
 
@@ -31,10 +29,11 @@ def start_server(args: StartServerArguments):
 
     server_args = ServerArguments(
         client_num_in_total=args.get_client_num_in_total(),
-        client=args.get_client(),
+        client_declaration=args.get_client_declaration(),
         epochs=args.get_epochs(),
         server_model=args.get_server_model(),
-        server_strategy=args.get_server_strategy()
+        server_strategy=args.get_server_strategy(),
+        clients_configs=args.get_clients_configs()
     )
 
     server = (args.get_server())(server_args)

@@ -10,6 +10,9 @@ class dotdict(dict):
 
 ########################################### CLIENT ###########################################
 
+class ClientConfiguration():
+    pass
+
 class ClientArguments():
 
     def __init__(
@@ -25,11 +28,20 @@ class ClientArguments():
     def get_server_ref(self):
         return self.server_ref
     
+    def set_server_ref(self, server_ref):
+        self.server_ref = server_ref
+    
     def get_server_model_refs(self):
         return self.model_refs
     
+    def set_server_model_refs(self, server_model_refs):
+        self.server_model_refs = server_model_refs
+    
     def get_epochs(self):
         return self.epochs
+    
+    def set_epochs(self, epochs):
+        self.epochs = epochs
     
     def to_dict(self):
         return dotdict({
@@ -111,39 +123,39 @@ class AbstractServerStrategy(abc.ABC):
     def execute_eval_request(self, clients=None, total_client_num=None):
         pass
 
-    def init_clients(self, client_declaration, client_args, client_name_pattern, total_client_number):
+    def init_clients(self, server_ref, server_model_refs):
+        pass
+
+    def create_clients(self, client_declaration, client_args, client_name_pattern, total_client_number):
         pass
 
 ########################################### SERVER ###########################################
-
-class ClientWeightTransfer(Enum):
-    NONE = 0
-    CLIENT2CLIENT = 1
-    SERVER2CLIENT = 2
 
 class ServerArguments():
 
     def __init__(
         self,
         client_num_in_total: int,
-        client: AbstractClient,
+        client_declaration: AbstractClient,
         server_model: torch.nn.Module,
         epochs: int,
         server_strategy: AbstractServerStrategy,
+        clients_configs: dict,
 
     ):
         self.client_num_in_total = client_num_in_total
-        self.client = client
+        self.client_declaration = client_declaration
         self.server_model = server_model
         self.epochs = epochs
         self.server_strategy = server_strategy
+        self.clients = clients_configs
 
     
     def get_client_num_in_total(self):
         return self.client_num_in_total
     
-    def get_client(self):
-        return self.client
+    def get_client_declaration(self):
+        return self.client_declaration
 
     def get_server_model(self):
         return self.server_model
@@ -153,6 +165,9 @@ class ServerArguments():
     
     def get_server_strategy(self) -> AbstractServerStrategy:
         return self.server_strategy
+    
+    def get_clients_configs(self):
+        return self.clients
 
 class AbstractServer(abc.ABC):
 
@@ -180,21 +195,23 @@ class StartServerArguments():
         host: str,
         world_size: int,
         config: str,
-        client: AbstractClient,
+        client_declaration: AbstractClient,
         server: AbstractServer,
         server_model: torch.nn.Module,
         epochs: int,
         server_strategy: AbstractServerStrategy,
+        clients: dict
     ):
         self.port = port
         self.host = host
         self.world_size = world_size
         self.config = config
-        self.client = client
+        self.client_declaration = client_declaration
         self.server = server
         self.server_model = server_model
         self.epochs = epochs
         self.server_strategy = server_strategy
+        self.clients = clients
 
     def get_port(self):
         return self.port
@@ -211,8 +228,8 @@ class StartServerArguments():
     def get_config(self):
         return self.config
     
-    def get_client(self):
-        return self.client
+    def get_client_declaration(self):
+        return self.client_declaration
     
     def get_server(self):
         return self.server
@@ -225,3 +242,6 @@ class StartServerArguments():
     
     def get_server_strategy(self):
         return self.server_strategy
+    
+    def get_clients_configs(self):
+        return self.clients

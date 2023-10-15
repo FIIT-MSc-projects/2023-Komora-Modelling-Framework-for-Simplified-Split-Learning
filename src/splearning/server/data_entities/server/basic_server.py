@@ -31,7 +31,7 @@ class Client2ClientInitializationStrategy(AbstractServerStrategy):
         total = []
         num_corr = []
         check_eval = [clients[client_id].rpc_async(timeout=0).eval() for client_id in range(1, total_client_num + 1)]
-        
+
         for check in check_eval:
             corr, tot = check.wait()
             total.append(tot)
@@ -39,7 +39,19 @@ class Client2ClientInitializationStrategy(AbstractServerStrategy):
 
         self.logger.info("Accuracy over all data: {:.3f}".format(sum(num_corr) / sum(total)))
 
-    def init_clients(self, client_declaration, client_args, total_client_number):
+    def init_clients(self, clients_configs, server_ref, server_model_refs):
+        self.logger.info("Starting the initialization of the array of clients")
+
+        clients = {}
+
+        for rank in clients_configs:
+            client = clients_configs[rank]
+            client_args = ClientArguments(server_ref, server_model_refs, client["args"]["epochs"])
+            clients[rank] = rpc.remote(client["name"], client["declaration"], (rank, client_args))
+
+        return clients
+
+    def create_clients(self, client_declaration, client_args, total_client_number):
         self.logger.info("Starting the initialization of the array of clients")
 
         clients = {}
@@ -79,13 +91,18 @@ class Client2ClientInitializationStrategy(AbstractServerStrategy):
 class BasicServer(AbstractServer):
     def __init__(self, args: ServerArguments):
 
+        self.clients_configs = args.get_clients_configs()
         self.last_alice_id: int = None
         self.server_ref: RRef = RRef(self)
         self.model: torch.nn.Module = args.get_server_model()()
         self.client_num_in_total: int  = args.get_client_num_in_total()
         self.strategy: AbstractServerStrategy = args.get_server_strategy()()
 
-        self.__init_clients(client_declaration=args.get_client(), epochs=args.get_epochs(), total_client_num=args.get_client_num_in_total())
+        self.__init_clients(
+            client_declaration=args.get_client_declaration(), 
+            epochs=args.get_epochs(), 
+            total_client_num=args.get_client_num_in_total(), 
+        )
 
     def train_request(self,client_id):
         self.strategy.execute_train_request(self.clients, client_id)
@@ -97,11 +114,17 @@ class BasicServer(AbstractServer):
         return self.model(x)
     
     def __init_clients(self, client_declaration, epochs, total_client_num):
-
         server_model_refs = list(map(lambda x: RRef(x),self.model.parameters()))
 
-        self.clients = self.strategy.init_clients(
-            client_declaration=client_declaration, 
-            client_args=ClientArguments(self.server_ref, server_model_refs, epochs), 
-            total_client_number=total_client_num
-        )
+        if self.clients_configs is None:        
+            self.clients = self.strategy.create_clients(
+                client_declaration=client_declaration, 
+                client_args=ClientArguments(self.server_ref, server_model_refs, epochs), 
+                total_client_number=total_client_num
+            )
+
+            return
+        
+        self.clients = self.strategy.init_clients(self.clients_configs, self.server_ref, server_model_refs)
+
+        
