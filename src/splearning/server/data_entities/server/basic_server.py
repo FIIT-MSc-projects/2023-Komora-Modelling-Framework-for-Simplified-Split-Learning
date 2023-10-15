@@ -1,9 +1,13 @@
 import os
 import sys
+import torch
 import logging
 import torch.distributed.rpc as rpc
 from torch.distributed.rpc import RRef
-from splearning.utils.data_structures import AbstractServer, AbstractServerStrategy, ClientArguments, ServerArguments
+from splearning.utils.data_structures import AbstractServer
+from splearning.utils.data_structures import AbstractServerStrategy
+from splearning.utils.data_structures import ClientArguments
+from splearning.utils.data_structures import ServerArguments
 
 class Client2ClientInitializationStrategy(AbstractServerStrategy):
     def __init__(self):
@@ -27,6 +31,7 @@ class Client2ClientInitializationStrategy(AbstractServerStrategy):
         total = []
         num_corr = []
         check_eval = [clients[client_id].rpc_async(timeout=0).eval() for client_id in range(1, total_client_num + 1)]
+        
         for check in check_eval:
             corr, tot = check.wait()
             total.append(tot)
@@ -74,11 +79,11 @@ class Client2ClientInitializationStrategy(AbstractServerStrategy):
 class BasicServer(AbstractServer):
     def __init__(self, args: ServerArguments):
 
-        self.server_ref = RRef(self)
-        self.model = args.get_server_model()()
+        self.last_alice_id: int = None
+        self.server_ref: RRef = RRef(self)
+        self.model: torch.nn.Module = args.get_server_model()()
+        self.client_num_in_total: int  = args.get_client_num_in_total()
         self.strategy: AbstractServerStrategy = args.get_server_strategy()()
-        self.last_alice_id = None
-        self.client_num_in_total  = args.get_client_num_in_total()
 
         self.__init_clients(client_declaration=args.get_client(), epochs=args.get_epochs(), total_client_num=args.get_client_num_in_total())
 
@@ -96,7 +101,7 @@ class BasicServer(AbstractServer):
         server_model_refs = list(map(lambda x: RRef(x),self.model.parameters()))
 
         self.clients = self.strategy.init_clients(
-            client_declaration, 
-            ClientArguments(self.server_ref, server_model_refs, epochs), 
-            total_client_num
+            client_declaration=client_declaration, 
+            client_args=ClientArguments(self.server_ref, server_model_refs, epochs), 
+            total_client_number=total_client_num
         )
