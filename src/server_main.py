@@ -1,10 +1,10 @@
 import argparse
-import torch.distributed.rpc as rpc
-from splearning.server.data_entities.server.basic_server import BasicServer, Client2ClientInitializationStrategy
+from splearning.server.data_entities.server.basic_server import BasicServer
 from splearning.server.data_entities.client.basic_client import BasicClient
+from splearning.server.data_entities.server.client_2_client_initialization_strategy import Client2ClientInitializationStrategy
 from splearning.server.start_server import start_server
 from models.server_models.simple_server_model import simple_server_model
-from splearning.utils.data_structures import ClientArguments, ServerArguments, StartServerArguments
+from splearning.utils.data_structures import StartServerArguments
 
 if __name__ == "__main__":
 

@@ -123,7 +123,7 @@ class AbstractServerStrategy(abc.ABC):
     def execute_eval_request(self, clients=None, total_client_num=None):
         pass
 
-    def init_clients(self, server_ref, server_model_refs):
+    def create_clients_from_configs(self, server_ref, server_model_refs):
         pass
 
     def create_clients(self, client_declaration, client_args, client_name_pattern, total_client_number):
@@ -136,12 +136,11 @@ class ServerArguments():
     def __init__(
         self,
         client_num_in_total: int,
-        client_declaration: AbstractClient,
         server_model: torch.nn.Module,
-        epochs: int,
         server_strategy: AbstractServerStrategy,
-        clients_configs: dict,
-
+        epochs: int=1,
+        clients_configs: dict=None,
+        client_declaration: AbstractClient=None,
     ):
         self.client_num_in_total = client_num_in_total
         self.client_declaration = client_declaration
@@ -150,8 +149,14 @@ class ServerArguments():
         self.server_strategy = server_strategy
         self.clients = clients_configs
 
+        if clients_configs is not None and len(clients_configs) != client_num_in_total:
+            raise ValueError("Provided different number of clients configs than the specified total number of clients")
+        
+        if clients_configs is None and client_declaration is None:
+            raise AttributeError("Either list of clients configs or a client declaration needs to be provided")
+
     
-    def get_client_num_in_total(self):
+    def get_total_client_num(self):
         return self.client_num_in_total
     
     def get_client_declaration(self):
