@@ -188,6 +188,10 @@ class AbstractServer(abc.ABC):
         pass
 
     @abc.abstractmethod
+    def train_clients(self,client_id):
+        pass
+
+    @abc.abstractmethod
     def eval_request(self):
         pass
 
@@ -212,7 +216,8 @@ class StartServerArguments():
         server_model: torch.nn.Module,
         epochs: int,
         server_strategy: AbstractServerStrategy,
-        clients: dict
+        clients_configs: dict,
+        parallel_training: bool
     ):
         self.port = port
         self.host = host
@@ -223,7 +228,8 @@ class StartServerArguments():
         self.server_model = server_model
         self.epochs = epochs
         self.server_strategy = server_strategy
-        self.clients = clients
+        self.clients_configs = clients_configs
+        self.parallel_training = parallel_training
 
     def get_port(self):
         return self.port
@@ -256,4 +262,7 @@ class StartServerArguments():
         return self.server_strategy
     
     def get_clients_configs(self):
-        return self.clients
+        return self.clients_configs
+    
+    def get_parallel_training(self):
+        return self.parallel_training

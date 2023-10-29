@@ -4,7 +4,6 @@ from splearning.server.data_entities.client.basic_client import BasicClient
 from splearning.server.data_entities.server.client_2_client_initialization_strategy import Client2ClientInitializationStrategy
 from splearning.server.start_server import start_server
 from models.server_models.simple_server_model import simple_server_model
-from splearning.server.start_server_multithread import start_server_multithread
 from splearning.utils.data_structures import StartServerArguments
 
 if __name__ == "__main__":
@@ -43,8 +42,8 @@ if __name__ == "__main__":
         server_model=simple_server_model,
         epochs=params.epochs,
         server_strategy=Client2ClientInitializationStrategy,
-        clients=clients
+        clients_configs=clients,
+        parallel_training=True
     )
 
-    # start_server(args)
-    start_server_multithread(args)
+    start_server(args)

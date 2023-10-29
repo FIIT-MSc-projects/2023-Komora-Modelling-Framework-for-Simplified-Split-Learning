@@ -10,13 +10,20 @@ def init_env(port, address):
     os.environ['MASTER_ADDR'] = address
 
 
-def server_lifecycle(server: AbstractServer, world_size):
+def sequential_epoch_training(server: AbstractServer, world_size):
 
     iterations = os.getenv("iterations", 3)
 
     for _ in range(iterations):
         for client_id in range(1, world_size):
             server.train_request(client_id)
+        server.eval_request()
+
+def parallel_batch_training(server: AbstractServer):
+
+    iterations = os.getenv("iterations", 3)
+    for _ in range(iterations):
+        server.train_clients()
         server.eval_request()
 
 def start_server(args: StartServerArguments):
@@ -37,6 +44,9 @@ def start_server(args: StartServerArguments):
     )
 
     server = (args.get_server())(server_args)
-    server_lifecycle(server, world_size)
+    if args.get_parallel_training():
+        parallel_batch_training(server)
+    else:
+        sequential_epoch_training(server, world_size)
 
     rpc.shutdown()
