@@ -81,8 +81,27 @@ class BasicClient(AbstractClient):
         for _ in range(self.epochs):
             for inputs, labels in self.train_dataloader:
                 with dist_autograd.context() as ctx_id:
+                    print(f"ctx_id: {ctx_id}")
                     loss = self.__forward(inputs, labels)
                     self.__backward(ctx_id, loss)
+
+    def train_batch(self):
+        self.batch_number += 1
+        
+        try:
+            inputs, labels = next(self.iter_dataloader)
+        except StopIteration:
+            self.batch_number = 0
+            self.iter_dataloader = iter(self.train_dataloader)
+            inputs, labels = next(self.iter_dataloader)
+            
+        with dist_autograd.context() as ctx_id:
+            loss = self.__forward(inputs, labels)
+            self.__backward(ctx_id, loss)
+
+    def get_total_batches(self):
+        return self.total_batches
+
 
     def give_weights(self):
         return [deepcopy(self.input_model.state_dict()), deepcopy(self.output_model.state_dict())]
@@ -112,6 +131,9 @@ class BasicClient(AbstractClient):
         print(f"datapath: {datapath}")
         self.train_dataloader = torch.load(os.path.join(datapath ,f"data_worker{self.client_id}_train.pt"))
         self.test_dataloader = torch.load(os.path.join(datapath ,f"data_worker{self.client_id}_test.pt"))
+        self.iter_dataloader = iter(self.train_dataloader)
+        self.batch_number = 0
+        self.total_batches = len(self.train_dataloader)
 
         self.n_train = len(self.train_dataloader.dataset)
         self.logger.info("Local Data Statistics:")

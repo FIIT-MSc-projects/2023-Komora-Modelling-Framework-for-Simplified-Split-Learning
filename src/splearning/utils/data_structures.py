@@ -120,6 +120,9 @@ class AbstractServerStrategy(abc.ABC):
     def execute_train_request(self, clients=None, client_id=None):
         pass
 
+    def execute_train_requests(self, clients, batches):
+        pass
+
     def execute_eval_request(self, clients=None, total_client_num=None):
         pass
 
@@ -190,6 +193,10 @@ class AbstractServer(abc.ABC):
 
     @abc.abstractmethod
     def train(self,x):
+        pass
+
+    @abc.abstractmethod
+    def share_memory(self):
         pass
 
 class StartServerArguments():

@@ -4,15 +4,16 @@ from splearning.server.data_entities.client.basic_client import BasicClient
 from splearning.server.data_entities.server.client_2_client_initialization_strategy import Client2ClientInitializationStrategy
 from splearning.server.start_server import start_server
 from models.server_models.simple_server_model import simple_server_model
+from splearning.server.start_server_multithread import start_server_multithread
 from splearning.utils.data_structures import StartServerArguments
 
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='Split Learning Initialization')
     parser.add_argument('--world_size',type=int,default=3,help='The world size which is equal to 1 server + (world size - 1) clients')
-    parser.add_argument('--port',type=str,default="9005",help='master port')
+    parser.add_argument('--port',type=str,default="8888",help='master port')
     parser.add_argument('--host',type=str,default="localhost",help='master hostname')    
-    parser.add_argument('--config',type=str,default="server.env",help='config file path')
+    parser.add_argument('--config',type=str,default="/home/miso/School/year5/DP/split_learning_framework/src/server.env",help='config file path')
     parser.add_argument('--epochs',type=int,default=1,help='number of training epochs')
     params = parser.parse_args()
 
@@ -45,4 +46,5 @@ if __name__ == "__main__":
         clients=clients
     )
 
-    start_server(args)
+    # start_server(args)
+    start_server_multithread(args)

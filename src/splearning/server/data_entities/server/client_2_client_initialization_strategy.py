@@ -1,7 +1,9 @@
 import os
 import sys
 import logging
+from threading import Thread
 import torch.distributed.rpc as rpc
+import torch.distributed.autograd as dist_autograd
 from splearning.utils.data_structures import AbstractServerStrategy
 from splearning.utils.data_structures import ClientArguments
 
@@ -21,12 +23,25 @@ class Client2ClientInitializationStrategy(AbstractServerStrategy):
         current_client.rpc_sync(timeout=0).train()
         self.last_alice_id = client_id
 
+    def execute_train_requests(self, clients, batches=None):
+        min_batches = min(map(lambda client_id: clients[client_id].rpc_sync(timeout=0).get_total_batches(), clients))
+
+        if batches is None:
+            batches = min_batches
+
+
+        for _ in range(batches):
+            for i in range(len(clients)):
+                current_client = clients[i + 1]
+                current_client.rpc_sync(timeout=0).train_batch()
+
+
     def execute_eval_request(self, clients, total_client_num):
         self.logger.info("Initializing Evaluation of all clients")
 
         total = []
         num_corr = []
-        check_eval = [clients[client_id].rpc_async(timeout=0).eval() for client_id in range(1, total_client_num + 1)]
+        check_eval = [clients[client_id].rpc_async(timeout=0).eval() for client_id in clients]
 
         for check in check_eval:
             corr, tot = check.wait()
