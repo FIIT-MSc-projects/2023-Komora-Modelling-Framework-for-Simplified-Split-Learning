@@ -16,14 +16,14 @@ def sequential_epoch_training(server: AbstractServer, world_size):
 
     for _ in range(iterations):
         for client_id in range(1, world_size):
-            server.train_request(client_id)
+            server.train_request(client_id=client_id)
         server.eval_request()
 
 def parallel_batch_training(server: AbstractServer):
 
-    iterations = os.getenv("iterations", 3)
+    iterations = os.getenv("iterations", 5)
     for _ in range(iterations):
-        server.train_clients()
+        server.train_request(batches=100)
         server.eval_request()
 
 def start_server(args: StartServerArguments):
@@ -44,6 +44,7 @@ def start_server(args: StartServerArguments):
     )
 
     server = (args.get_server())(server_args)
+
     if args.get_parallel_training():
         parallel_batch_training(server)
     else:

@@ -1,4 +1,6 @@
 import argparse
+
+import torch
 from splearning.server.data_entities.server.basic_server import BasicServer
 from splearning.server.data_entities.client.basic_client import BasicClient
 from splearning.server.data_entities.server.client_2_client_initialization_strategy import Client2ClientInitializationStrategy
@@ -43,7 +45,9 @@ if __name__ == "__main__":
         epochs=params.epochs,
         server_strategy=Client2ClientInitializationStrategy,
         clients_configs=clients,
-        parallel_training=True
+        parallel_training=False
     )
+
+    torch.multiprocessing.set_sharing_strategy('file_system')
 
     start_server(args)

@@ -8,22 +8,22 @@ import torch.distributed.autograd as dist_autograd
 from splearning.utils.data_structures import AbstractServerStrategy
 from splearning.utils.data_structures import ClientArguments
 
-class Client2ClientInitializationStrategy(AbstractServerStrategy):
+class BatchTrainingStrategy(AbstractServerStrategy):
     def __init__(self):
         self.__init_logger()
         self.last_alice_id = None
 
-    def execute_train_request(self, clients, client_id):
-        print(client_id)
-        self.logger.info(f"Train Request for client with id: {client_id}")
+    def execute_train_request(self, clients, batches):
+        min_batches = min(map(lambda client_id: clients[client_id].rpc_sync(timeout=0).get_total_batches(), clients))
 
-        current_client = clients[client_id]
+        if batches is None:
+            batches = min_batches
 
-        if self.last_alice_id is not None:
-            current_client.rpc_sync(timeout=0).update_model(clients[self.last_alice_id], self.last_alice_id)
-
-        current_client.rpc_sync(timeout=0).train()
-        self.last_alice_id = client_id
+        for _ in range(batches):
+            for i in range(len(clients)):
+                current_client = clients[i + 1]
+                current_client.rpc_sync(timeout=0).train_batch()
+        
 
     def execute_eval_request(self, clients, total_client_num):
         self.logger.info("Initializing Evaluation of all clients")

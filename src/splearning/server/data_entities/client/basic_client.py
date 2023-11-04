@@ -1,5 +1,6 @@
 import logging
 import sys
+import time
 
 import torch.distributed.rpc
 import torch
@@ -64,7 +65,6 @@ class BasicClient(AbstractClient):
 
         # Server model
         server_model_activation = self.server_ref.rpc_sync().train(input_model_activation)
-
         # Output client model
         output_model_activation = self.output_model(server_model_activation)
 
@@ -72,7 +72,7 @@ class BasicClient(AbstractClient):
         return loss
 
     def __backward(self, context_id, loss):
-        dist_autograd.backward(context_id, [loss])
+        dist_autograd.backward(context_id, [loss], False)
         self.dist_optimizer.step(context_id)
 
     def train(self):
@@ -81,13 +81,12 @@ class BasicClient(AbstractClient):
         for _ in range(self.epochs):
             for inputs, labels in self.train_dataloader:
                 with dist_autograd.context() as ctx_id:
-                    print(f"ctx_id: {ctx_id}")
                     loss = self.__forward(inputs, labels)
                     self.__backward(ctx_id, loss)
 
     def train_batch(self):
         self.batch_number += 1
-        
+
         try:
             inputs, labels = next(self.iter_dataloader)
         except StopIteration:

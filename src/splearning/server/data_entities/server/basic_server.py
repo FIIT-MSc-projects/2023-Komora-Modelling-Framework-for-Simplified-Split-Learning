@@ -1,3 +1,4 @@
+import time
 import torch
 from torch.distributed.rpc import RRef
 from splearning.utils.data_structures import AbstractServer
@@ -12,6 +13,8 @@ class BasicServer(AbstractServer):
         self.model: torch.nn.Module = args.get_server_model()()
         self.total_client_num: int  = args.get_total_client_num()
         self.strategy: AbstractServerStrategy = args.get_server_strategy()()
+        self.lock = False
+        self.lock2 = False
 
         self.__init_clients(
             client_declaration=args.get_client_declaration(), 
@@ -20,23 +23,15 @@ class BasicServer(AbstractServer):
             clients_configs=args.get_clients_configs()
         )
 
-    def train_request(self,client_id):
-        print("Handling training request at server")
-        self.strategy.execute_train_request(self.clients, client_id)
+    def train_request(self, **kwargs):
+        self.strategy.execute_train_request(self.clients, **kwargs)
 
-    def train_clients(self):
-        self.model.share_memory()
-        self.strategy.execute_train_requests(self.clients, batches=10)
 
-    def eval_request(self):
-        self.strategy.execute_eval_request(self.clients, self.total_client_num)
+    def eval_request(self, **kwargs):
+        self.strategy.execute_eval_request(self.clients, self.total_client_num, **kwargs)
 
     def train(self,x):
-        return self.model(x)
-    
-    def share_memory(self):
-        print("Sharing da memory")
-        self.model.share_memory()
+        return self.model(x)  
     
     def __init_clients(self, client_declaration, epochs, total_client_num, clients_configs):
         server_model_refs = list(map(lambda x: RRef(x),self.model.parameters()))

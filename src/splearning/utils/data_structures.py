@@ -117,19 +117,16 @@ class AbstractServerStrategy(abc.ABC):
     def __init__(self):
         pass
 
-    def execute_train_request(self, clients=None, client_id=None):
+    def execute_train_request(self, clients, **kwargs):
         pass
 
-    def execute_train_requests(self, clients, batches):
+    def execute_eval_request(self, clients=None, total_client_num=None, **kwargs):
         pass
 
-    def execute_eval_request(self, clients=None, total_client_num=None):
+    def create_clients_from_configs(self, server_ref, server_model_refs, **kwargs):
         pass
 
-    def create_clients_from_configs(self, server_ref, server_model_refs):
-        pass
-
-    def create_clients(self, client_declaration, client_args, client_name_pattern, total_client_number):
+    def create_clients(self, client_declaration, client_args, client_name_pattern, total_client_number, **kwargs):
         pass
 
 ########################################### SERVER ###########################################
@@ -184,23 +181,15 @@ class AbstractServer(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def train_request(self,client_id):
+    def train_request(self, **kwargs):
         pass
 
     @abc.abstractmethod
-    def train_clients(self,client_id):
-        pass
-
-    @abc.abstractmethod
-    def eval_request(self):
+    def eval_request(self, **kwargs):
         pass
 
     @abc.abstractmethod
     def train(self,x):
-        pass
-
-    @abc.abstractmethod
-    def share_memory(self):
         pass
 
 class StartServerArguments():
