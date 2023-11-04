@@ -3,6 +3,7 @@ import argparse
 import torch
 from splearning.server.data_entities.server.basic_server import BasicServer
 from splearning.server.data_entities.client.basic_client import BasicClient
+from splearning.server.data_entities.server.batch_training_strategy import BatchTrainingStrategy
 from splearning.server.data_entities.server.client_2_client_initialization_strategy import Client2ClientInitializationStrategy
 from splearning.server.start_server import start_server
 from models.server_models.simple_server_model import simple_server_model
@@ -43,9 +44,9 @@ if __name__ == "__main__":
         server=BasicServer,
         server_model=simple_server_model,
         epochs=params.epochs,
-        server_strategy=Client2ClientInitializationStrategy,
+        server_strategy=BatchTrainingStrategy,
         clients_configs=clients,
-        parallel_training=False
+        parallel_training=True
     )
 
     torch.multiprocessing.set_sharing_strategy('file_system')

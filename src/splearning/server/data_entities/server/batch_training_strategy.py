@@ -13,6 +13,9 @@ class BatchTrainingStrategy(AbstractServerStrategy):
         self.__init_logger()
         self.last_alice_id = None
 
+    def execute_train_model(self, model, x):
+        return model(x)  
+
     def execute_train_request(self, clients, batches):
         min_batches = min(map(lambda client_id: clients[client_id].rpc_sync(timeout=0).get_total_batches(), clients))
 

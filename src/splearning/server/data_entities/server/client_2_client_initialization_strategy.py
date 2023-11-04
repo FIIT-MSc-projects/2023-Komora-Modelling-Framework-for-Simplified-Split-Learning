@@ -13,6 +13,9 @@ class Client2ClientInitializationStrategy(AbstractServerStrategy):
         self.__init_logger()
         self.last_alice_id = None
 
+    def execute_train_model(self, model, x):
+        return model(x)  
+
     def execute_train_request(self, clients, client_id):
         print(client_id)
         self.logger.info(f"Train Request for client with id: {client_id}")

@@ -117,6 +117,9 @@ class AbstractServerStrategy(abc.ABC):
     def __init__(self):
         pass
 
+    def execute_train_model(self, model, input, **kwargs):
+        pass
+
     def execute_train_request(self, clients, **kwargs):
         pass
 
