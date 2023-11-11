@@ -15,7 +15,10 @@ class ModelBuilder():
             "ReLU": ReLU
         })
 
-    def build_model(self, model, **params):
+    def build_model(self, layer):
+        model, params = list(layer.items())[0]
+        if params is None:
+            params = {}
         return self.mapping[model](**params)
 
 def serialize_model(model: torch.nn.Module.__class__, model_path: str):
@@ -24,21 +27,10 @@ def serialize_model(model: torch.nn.Module.__class__, model_path: str):
     torch.save(model(), model_path)
 
 def create_model(layers):
-    model_layers = []
     builder = ModelBuilder()
-
-    for layer in layers:
-
-        name, kwargs = list(layer.items())[0]
-        if kwargs is None:
-            kwargs = {}
-
-        
-        model_layers.append(builder.build_model(name, **kwargs))
-        print(builder.build_model(name, **kwargs))
-
+    
+    model_layers = [builder.build_model(layer) for layer in layers]
     model = Sequential(*model_layers)
-    print(model)
     
     return model
 
