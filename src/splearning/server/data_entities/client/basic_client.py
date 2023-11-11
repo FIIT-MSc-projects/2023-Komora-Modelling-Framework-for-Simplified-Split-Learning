@@ -30,14 +30,11 @@ class BasicClient(AbstractClient):
         self.server_ref = args.get_server_ref()
         self.server_model_refs = args.get_server_model_refs()
 
-        # try:
-        # self.input_model = deserialize_model(os.getenv('client_model_1_path'))
-        # self.output_model = deserialize_model(os.getenv('client_model_2_path'))
-        self.input_model = load_model_from_yaml(os.getenv("input_model"), "input_model")
-        self.output_model = load_model_from_yaml(os.getenv("output_model"), "output_model")
-        # except Exception:
-        #     self.logger.error("Client models not found")
-
+        self.input_model = load_model_from_yaml(os.getenv("input_model"))
+        self.output_model = load_model_from_yaml(os.getenv("output_model"))
+   
+        summary(self.input_model, (1, 28, 28))
+        summary(self.output_model, (100, ))
 
         self.criterion = nn.CrossEntropyLoss()
 

@@ -18,10 +18,6 @@ def start_client(args: StartClientArguments):
 
     print(f"Starting client {args.get_name()}{args.get_rank()}")
     init_env(args.get_port(), args.get_address())
-    serialize_models(args.get_input_model(), args.get_output_model())
-    # input_model = load_model_from_yaml(os.getenv("input_model"), "input_model")
-    # output_model = load_model_from_yaml(os.getenv("output_model"), "output_model")
-    # serialize_models(input_model, output_model)
 
     rpc.init_rpc(f"{args.get_name()}{args.get_rank()}", rank=args.get_rank(), world_size=args.get_world_size())
     rpc.shutdown()
