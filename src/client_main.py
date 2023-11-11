@@ -38,8 +38,8 @@ if __name__ == "__main__":
         port=args.port,
         address=args.host,
         input_model=input_model,
-        output_model=output_model2
+        output_model=output_model
     )
 
-    load_mnist_image(data_args)
+    # load_mnist_image(data_args)
     start_client(client_args)

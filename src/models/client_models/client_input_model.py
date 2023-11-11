@@ -5,11 +5,15 @@ class input_model(nn.Module):
     def __init__(self):
         super().__init__()
         self.conv1 = nn.Conv2d(in_channels=1, out_channels=32, kernel_size=3)
-        self.pool = nn.MaxPool2d(2, 2)
+        self.pool = nn.MaxPool2d(kernel_size=2, stride=2)
 
     def forward(self, x):
         # x = x.view(-1,1,28,28)
-        x = self.pool(F.relu(self.conv1(x)))
+        # x = self.conv1(x)
+        # x = self.pool(F.relu(x))
+        x = self.conv1(x)
+        x = F.relu(x)
+        x = self.pool(x)
         return x
     
 class input_model2(nn.Module):

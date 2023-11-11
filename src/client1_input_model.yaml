@@ -1,0 +1,13 @@
+layers:
+  - conv2d:
+      torch_type: Conv2d
+      activation_function: relu
+      parameters: 
+        in_channels: 1
+        out_channels: 32
+        kernel_size: 3
+  - pool:
+      torch_type: MaxPool2d
+      parameters:
+        kernel_size: 2
+        stride: 2

@@ -3,6 +3,7 @@ import sys
 import time
 
 import torch.distributed.rpc
+from torchinfo import summary
 import torch
 import torch.nn as nn
 from torch.distributed.rpc import RRef
@@ -12,6 +13,7 @@ import logging
 import os
 from collections import Counter
 from copy import deepcopy
+from splearning.client.model_serialization import load_model_from_yaml
 
 from splearning.server.model_deserialization import deserialize_model
 from splearning.utils.data_structures import AbstractClient, ClientArguments
@@ -28,13 +30,14 @@ class BasicClient(AbstractClient):
         self.server_ref = args.get_server_ref()
         self.server_model_refs = args.get_server_model_refs()
 
-        try:
-            self.logger.info(f"Loading {os.getenv('client_model_1_path')}")
-            self.input_model = deserialize_model(os.getenv('client_model_1_path'))
-            self.logger.info(f"Loading {os.getenv('client_model_2_path')}")
-            self.output_model = deserialize_model(os.getenv('client_model_2_path'))
-        except:
-            self.logger.error("Client models not found")
+        # try:
+        # self.input_model = deserialize_model(os.getenv('client_model_1_path'))
+        # self.output_model = deserialize_model(os.getenv('client_model_2_path'))
+        self.input_model = load_model_from_yaml(os.getenv("input_model"), "input_model")
+        self.output_model = load_model_from_yaml(os.getenv("output_model"), "output_model")
+        # except Exception:
+        #     self.logger.error("Client models not found")
+
 
         self.criterion = nn.CrossEntropyLoss()
 

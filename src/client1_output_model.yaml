@@ -1,0 +1,6 @@
+layers:
+    - fc:
+        torch_type: Linear
+        parameters:
+          in_features: 100
+          out_features: 10
