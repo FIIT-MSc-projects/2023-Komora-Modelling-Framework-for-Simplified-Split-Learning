@@ -1,6 +1,7 @@
 import os
 import argparse
 from dotenv import load_dotenv
+from data_handling_experiment_1.save_data import prepare_data, load_image_datasets
 
 from splearning.client.client import start_client
 from data_handling.mnist_flat_generator import load_mnist_image
@@ -42,4 +43,6 @@ if __name__ == "__main__":
     )
 
     # load_mnist_image(data_args)
+    train_dataset, test_dataset = load_image_datasets(os.getenv("datapath"), shape=(28,28))
+    prepare_data(train_dataset, test_dataset, int(args.clients), int(args.rank), os.getenv("datapath"))
     start_client(client_args)

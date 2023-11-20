@@ -1,6 +1,4 @@
 from data_handling.noniid_partition import non_iid_partition_with_dirichlet_distribution
-import pandas as pd
-import numpy as np
 import torch
 from torch.utils.data import DataLoader,TensorDataset,ConcatDataset
 import random
@@ -10,11 +8,13 @@ def relational_table_preprocess_dl(args,data,label_list,test_partition=0.2):
     label_list = torch.LongTensor(label_list)
     data = torch.FloatTensor(data)
 
-    net_dataidx_map = non_iid_partition_with_dirichlet_distribution(label_list=label_list,
-                                                                    client_num=args.clients,
-                                                                    classes=args.class_num,
-                                                                    alpha=args.partition_alpha,
-                                                                    task='task')
+    net_dataidx_map = non_iid_partition_with_dirichlet_distribution(
+        label_list=label_list,
+        client_num=args.clients,
+        classes=args.class_num,
+        alpha=args.partition_alpha,
+        task='task'
+    )
     # wish to set up proper configuration of data correctly as seen used in FedML
 
     train_data_local_dict = {}
@@ -32,7 +32,6 @@ def relational_table_preprocess_dl(args,data,label_list,test_partition=0.2):
 
         train_data_local_num_dict[key] = N_train
         random.shuffle(client_data)
-
 
         train,train_label = data[client_data[:N_train],:],label_list[client_data[:N_train]]
         train_dataset = TensorDataset(train,train_label)
@@ -59,11 +58,13 @@ def image_preprocess_dl(args,data,label_list,test_partition=0.2):
     label_list = torch.LongTensor(label_list)
     data = torch.FloatTensor(data)
 
-    net_dataidx_map = non_iid_partition_with_dirichlet_distribution(label_list=label_list,
-                                                                    client_num=args.clients,
-                                                                    classes=args.class_num,
-                                                                    alpha=args.partition_alpha,
-                                                                    task='task')
+    net_dataidx_map = non_iid_partition_with_dirichlet_distribution(
+        label_list=label_list,
+        client_num=args.clients,
+        classes=args.class_num,
+        alpha=args.partition_alpha,
+        task='task'
+    )
     # wish to set up proper configuration of data correctly as seen used in FedML
 
     train_data_local_dict = {}

@@ -1,6 +1,3 @@
-import logging
-import sys
-import time
 
 import torch.distributed.rpc
 from torchinfo import summary
@@ -11,11 +8,10 @@ import torch.distributed.autograd as dist_autograd
 from torch.distributed.optim import DistributedOptimizer
 import logging
 import os
-from collections import Counter
+import sys
 from copy import deepcopy
 from splearning.client.model_serialization import load_model_from_yaml
-
-from splearning.server.model_deserialization import deserialize_model
+from torch.utils.data import DataLoader
 from splearning.utils.data_structures import AbstractClient, ClientArguments
 
 
@@ -77,9 +73,12 @@ class BasicClient(AbstractClient):
 
     def train(self):
         self.logger.info("Training")
+        print("\n\n\n\n\n\n\n\n\n CPX")
 
         for _ in range(self.epochs):
             for inputs, labels in self.train_dataloader:
+                print(f"DATA shape: {inputs.shape}")
+
                 with dist_autograd.context() as ctx_id:
                     loss = self.__forward(inputs, labels)
                     self.__backward(ctx_id, loss)
@@ -111,6 +110,7 @@ class BasicClient(AbstractClient):
         # since we're not training, we don't need to calculate the gradients for our outputs
         with torch.no_grad():
             for data in self.test_dataloader:
+                print(f"DATA shape: {data.shape}")
                 images, labels = data
                 # calculate outputs by running images through the network
                 activation_alice1 = self.input_model(images)
@@ -128,16 +128,18 @@ class BasicClient(AbstractClient):
 
         datapath = os.getenv("datapath")
         print(f"datapath: {datapath}")
-        self.train_dataloader = torch.load(os.path.join(datapath ,f"data_worker{self.client_id}_train.pt"))
-        self.test_dataloader = torch.load(os.path.join(datapath ,f"data_worker{self.client_id}_test.pt"))
+        # self.train_dataloader = torch.load(os.path.join(datapath ,f"data_worker{self.client_id}_train.pt"))
+        # self.test_dataloader = torch.load(os.path.join(datapath ,f"data_worker{self.client_id}_test.pt"))
+        self.train_dataloader = torch.load(os.path.join(datapath ,f"train_dataset_{self.client_id}.pt"))
+        self.test_dataloader = torch.load(os.path.join(datapath ,f"test_dataset_{self.client_id}.pt"))
         self.iter_dataloader = iter(self.train_dataloader)
         self.batch_number = 0
         self.total_batches = len(self.train_dataloader)
 
-        self.n_train = len(self.train_dataloader.dataset)
+        self.n_train = len(self.train_dataloader)
         self.logger.info("Local Data Statistics:")
         self.logger.info("Dataset Size: {:.2f}".format(self.n_train))
-        self.logger.info(dict(Counter(self.test_dataloader.dataset[:][1].numpy().tolist())))
+        # self.logger.info(dict(Counter(self.test_dataloader.dataset[:][1].numpy().tolist())))
 
     def start_logger(self):
 
