@@ -4,7 +4,7 @@ from torchvision import datasets, transforms
 from torch.utils.data import Subset, random_split, DataLoader, TensorDataset, Dataset
 
 
-def load_image_datasets(datapath, shape, *transform_list):
+def load_image_datasets(datapath, shape, rank, clients_total, *transform_list):
     # Define transformations for the dataset
     transform = transforms.Compose([
         transforms.Resize(shape),
@@ -14,8 +14,14 @@ def load_image_datasets(datapath, shape, *transform_list):
     ])
 
     # Download and load the MNIST dataset
-    train_dataset = datasets.MNIST(root=datapath, train=True, transform=transform, download=False)
-    test_dataset = datasets.MNIST(root=datapath, train=True, transform=transform, download=False)
+    train_dataset = datasets.MNIST(root=datapath, train=True, transform=transform, download=True)
+    train_size = len(train_dataset) // clients_total
+    train_dataset = random_split(train_dataset, (train_size, len(train_dataset) - train_size))[rank-1]
+
+    test_dataset = datasets.MNIST(root=datapath, train=False, transform=transform, download=True)
+    test_size = len(test_dataset) // clients_total
+    print(len(random_split(test_dataset, (test_size, len(test_dataset) - test_size))))
+    test_dataset = random_split(test_dataset, (test_size, len(test_dataset) - test_size))[rank-1]
 
     return train_dataset, test_dataset
 
@@ -25,18 +31,12 @@ def prepare_data(
         clients_total: int, 
         rank: int, 
         datapath: str, 
-        shape=(28, 28), 
         batch_size=16):
 
     torch.manual_seed(12082023)
 
-    train_size = len(train_dataset) // clients_total
-    train_dataset, _ = random_split(train_dataset, (train_size, len(train_dataset) - train_size))
-    batched_train_dataset = DataLoader(train_dataset.dataset, batch_size=batch_size)
-
-    test_size = len(test_dataset) // clients_total
-    test_dataset, _ = random_split(test_dataset, (test_size, len(test_dataset) - test_size))
-    batched_test_dataset = DataLoader(test_dataset.dataset, batch_size=batch_size)
+    batched_train_dataset = DataLoader(train_dataset, batch_size=batch_size)
+    batched_test_dataset = DataLoader(test_dataset, batch_size=batch_size)
 
     # Save the entire MNIST dataset using torch.save
     torch.save(batched_train_dataset, os.path.join(datapath,f"train_dataset_{rank}.pt"))

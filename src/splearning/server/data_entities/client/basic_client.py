@@ -1,4 +1,5 @@
 
+import time
 import torch.distributed.rpc
 from torchinfo import summary
 import torch
@@ -13,6 +14,8 @@ from copy import deepcopy
 from splearning.client.model_serialization import load_model_from_yaml
 from torch.utils.data import DataLoader
 from splearning.utils.data_structures import AbstractClient, ClientArguments
+from splearning.utils.testing import simple_evaluate
+from splearning.utils.training import simple_train
 
 
 class BasicClient(AbstractClient):
@@ -65,23 +68,59 @@ class BasicClient(AbstractClient):
         output_model_activation = self.output_model(server_model_activation)
 
         loss = self.criterion(output_model_activation,labels)
-        return loss
+        return output_model_activation, loss
 
     def __backward(self, context_id, loss):
         dist_autograd.backward(context_id, [loss], False)
         self.dist_optimizer.step(context_id)
 
+    def train_epoch(self):
+        self.logger.info("Training epoch")
+
+        start_time = time.time()
+        running_loss = 0.0
+        correct = 0
+        total = 0
+
+        for inputs, labels in self.train_dataloader:
+            with dist_autograd.context() as ctx_id:
+                outputs, loss = self.__forward(inputs, labels)
+                self.__backward(ctx_id, loss)
+
+                running_loss += loss.item()
+
+                _, predicted = torch.max(outputs.data, 1)
+                total += labels.size(0)
+                correct += (predicted == labels).sum().item()
+
+        end_time = time.time()
+        epoch_training_time = end_time - start_time
+
+        loss = running_loss / len(self.train_dataloader)
+        accuracy = correct / total
+
+        print(f"Epoch training time: {epoch_training_time}")
+        print(f"Loss: {loss}")
+        print(f"Accuracy: {100 * accuracy:.2f}%")
+
+    def set_train(self):
+        print("Training mode - ON")
+        self.input_model.train()
+        self.server_ref.rpc_sync().set_train()
+        self.output_model.train()
+
+    def set_eval(self):
+        print("Training mode - OFF")
+        self.input_model.eval()
+        self.server_ref.rpc_sync().set_eval()
+        self.output_model.eval()
+
     def train(self):
-        self.logger.info("Training")
-        print("\n\n\n\n\n\n\n\n\n CPX")
-
         for _ in range(self.epochs):
-            for inputs, labels in self.train_dataloader:
-                print(f"DATA shape: {inputs.shape}")
-
-                with dist_autograd.context() as ctx_id:
-                    loss = self.__forward(inputs, labels)
-                    self.__backward(ctx_id, loss)
+            self.set_train()
+            self.train_epoch()
+            self.set_eval()
+            self.eval()
 
     def train_batch(self):
         self.batch_number += 1
@@ -105,33 +144,22 @@ class BasicClient(AbstractClient):
         return [deepcopy(self.input_model.state_dict()), deepcopy(self.output_model.state_dict())]
 
     def eval(self):
-        correct = 0
-        total = 0
-        # since we're not training, we don't need to calculate the gradients for our outputs
-        with torch.no_grad():
-            for data in self.test_dataloader:
-                print(f"DATA shape: {data.shape}")
-                images, labels = data
-                # calculate outputs by running images through the network
-                activation_alice1 = self.input_model(images)
-                activation_bob = self.server_ref.rpc_sync().train(activation_alice1)  # model(activation_alice1)
-                outputs = self.output_model(activation_bob)
-                # the class with the highest energy is what we choose as prediction
-                _, predicted = torch.max(outputs.data, 1)
-                total += labels.size(0)
-                correct += (predicted == labels).sum().item()
+        print("Evaluation")
 
-        self.logger.info(f"Alice{self.client_id} Evaluating Data: {round(correct / total, 3)}")
+        def output_function(inputs):
+            activation_alice1 = self.input_model(inputs)
+            activation_bob = self.server_ref.rpc_sync().train(activation_alice1)  # model(activation_alice1)
+            outputs = self.output_model(activation_bob)
+
+            return outputs
+        
+        correct, total = simple_evaluate(self.test_dataloader, output_function)
         return correct, total
 
     def load_data(self):
 
-        datapath = os.getenv("datapath")
-        print(f"datapath: {datapath}")
-        # self.train_dataloader = torch.load(os.path.join(datapath ,f"data_worker{self.client_id}_train.pt"))
-        # self.test_dataloader = torch.load(os.path.join(datapath ,f"data_worker{self.client_id}_test.pt"))
-        self.train_dataloader = torch.load(os.path.join(datapath ,f"train_dataset_{self.client_id}.pt"))
-        self.test_dataloader = torch.load(os.path.join(datapath ,f"test_dataset_{self.client_id}.pt"))
+        self.train_dataloader = torch.load(os.path.join(os.getenv("datapath"), f"train_dataset_{self.client_id}.pt"))
+        self.test_dataloader = torch.load(os.path.join(os.getenv("datapath"), f"test_dataset_{self.client_id}.pt"))
         self.iter_dataloader = iter(self.train_dataloader)
         self.batch_number = 0
         self.total_batches = len(self.train_dataloader)
@@ -139,7 +167,6 @@ class BasicClient(AbstractClient):
         self.n_train = len(self.train_dataloader)
         self.logger.info("Local Data Statistics:")
         self.logger.info("Dataset Size: {:.2f}".format(self.n_train))
-        # self.logger.info(dict(Counter(self.test_dataloader.dataset[:][1].numpy().tolist())))
 
     def start_logger(self):
 

@@ -32,6 +32,12 @@ class BasicServer(AbstractServer):
     def train(self, input, **kwargs):
         return self.strategy.execute_train_model(self.model, input, **kwargs)
     
+    def set_train(self):
+        self.model.train()
+
+    def set_eval(self):
+        self.model.eval()
+    
     def __init_clients(self, client_declaration, epochs, total_client_num, clients_configs):
         server_model_refs = list(map(lambda x: RRef(x),self.model.parameters()))
 
