@@ -1,4 +1,6 @@
+import logging
 import os
+import sys
 import time
 import torch
 import torch.nn as nn
@@ -8,6 +10,23 @@ import torch.nn.functional as F
 from data_handling_experiment_1.prepare_mnist_data import load_image_datasets, prepare_data
 from splearning.utils.testing import simple_evaluate
 from splearning.utils.training import simple_train
+
+logger = logging.getLogger(f"reference")
+logger.setLevel(logging.INFO)
+
+format = logging.Formatter("%(asctime)s: %(message)s")
+fh = logging.FileHandler(filename=f"../experiment1/reference.log",mode='w')
+fh.setFormatter(format)
+fh.setLevel(logging.INFO)
+
+sh = logging.StreamHandler(sys.stdout)
+sh.setFormatter(format)
+sh.setLevel(logging.DEBUG)
+
+logger.addHandler(fh)
+logger.addHandler(sh)
+
+logger.info("Reference is going insane!")
 
 epochs = 5
 
@@ -36,8 +55,8 @@ datapath = "experiment1/data"
 train_dataset, test_dataset = load_image_datasets(datapath, shape=(28,28))
 train_dataloader, test_dataloader = prepare_data(train_dataset, test_dataset, 16)
 
-print(f"Training dataset size: {len(train_dataset)}")
-print(f"Testing dataset size: {len(test_dataset)}")
+logger.info(f"Training dataset size: {len(train_dataset)}")
+logger.info(f"Testing dataset size: {len(test_dataset)}")
 
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(simple_conv_net.parameters(), lr=0.001, momentum=0.9)
@@ -46,12 +65,12 @@ total_training_time = 0
 
 for epoch in range(epochs):
     simple_conv_net.train()
-    total_training_time += simple_train(optimizer, train_dataloader, simple_conv_net)
+    total_training_time += simple_train(optimizer, train_dataloader, simple_conv_net, logger.info)
     simple_conv_net.eval()
-    correct, total = simple_evaluate(test_dataloader, simple_conv_net)
+    correct, total = simple_evaluate(test_dataloader, simple_conv_net, logger.info)
 
 end_time = time.time()
-print(f"Total training time: {total_training_time}")
+logger.info(f"Total training time: {total_training_time}")
 
 
     

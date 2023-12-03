@@ -14,3 +14,15 @@ class simple_server_model(nn.Module):
         x = F.relu(self.fc2(x))
 
         return x
+    
+class server_model_cifar(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.fc1 = nn.Linear(16 * 5 * 5, 120)
+        self.fc2 = nn.Linear(120, 84)
+
+    def forward(self, x):
+        x = torch.flatten(x, 1) # flatten all dimensions except batch
+        x = F.relu(self.fc1(x))
+        x = F.relu(self.fc2(x))
+        return x

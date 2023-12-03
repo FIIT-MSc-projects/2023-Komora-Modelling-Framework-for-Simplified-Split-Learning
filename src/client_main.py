@@ -1,12 +1,12 @@
 import os
 import argparse
 from dotenv import load_dotenv
-from data_handling_experiment_1.prepare_mnist_data_split import prepare_data, load_image_datasets
+from data_handling_experiment_2.prepare_cifar_data_split import get_dataset_memory_size, prepare_data, load_image_datasets
 
 from splearning.client.client import start_client
 from data_handling.mnist_flat_generator import load_mnist_image
-from models.client_models.client_input_model import input_model, input_model2
-from models.client_models.client_output_model import output_model, output_model2
+from models.client_models.client_input_model import input_model
+from models.client_models.client_output_model import output_model
 from splearning.utils.data_structures import StartClientArguments, dotdict
 
 if __name__ == "__main__":
@@ -43,8 +43,8 @@ if __name__ == "__main__":
     )
 
     # load_mnist_image(data_args)
-    train_dataset, test_dataset = load_image_datasets(os.getenv("datapath"), shape=(28,28), rank=int(args.rank), clients_total=int(args.clients))
-    print(f"Training dataset size: {len(train_dataset)}")
-    print(f"Testing dataset size: {len(test_dataset)}")
-    prepare_data(train_dataset, test_dataset, int(args.clients), int(args.rank), os.getenv("datapath"))
+    train_dataset, test_dataset = load_image_datasets(os.getenv("datapath"), rank=int(args.rank), clients_total=int(args.clients))
+    print(f"Training dataset size: {get_dataset_memory_size(train_dataset) / (1024*1024)} MB")
+    print(f"Testing dataset size: {get_dataset_memory_size(test_dataset) / (1024*1024)} MB")
+    prepare_data(train_dataset, test_dataset, int(args.clients), int(args.rank), os.getenv("datapath"), 64)
     start_client(client_args)

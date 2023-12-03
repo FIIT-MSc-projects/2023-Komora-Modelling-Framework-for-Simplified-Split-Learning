@@ -2,7 +2,7 @@ import time
 import torch
 import torch.nn as nn
 
-def simple_train(optimizer, train_dataloader, forward):
+def simple_train(optimizer, train_dataloader, forward, print):
     criterion = nn.CrossEntropyLoss()
 
     # Training loop

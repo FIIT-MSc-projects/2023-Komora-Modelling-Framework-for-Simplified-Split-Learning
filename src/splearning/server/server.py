@@ -12,12 +12,11 @@ def init_env(port, address):
 
 def sequential_epoch_training(server: AbstractServer, world_size):
 
-    iterations = os.getenv("iterations", 3)
+    iterations = os.getenv("iterations", 20)
 
     for _ in range(iterations):
         for client_id in range(1, world_size):
             server.train_request(client_id=client_id)
-        server.eval_request()
 
 def parallel_batch_training(server: AbstractServer):
 

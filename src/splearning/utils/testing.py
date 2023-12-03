@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 
-def simple_evaluate(test_dataloader, output_function):
+def simple_evaluate(test_dataloader, output_function, print):
     criterion = nn.CrossEntropyLoss()
 
     correct = 0

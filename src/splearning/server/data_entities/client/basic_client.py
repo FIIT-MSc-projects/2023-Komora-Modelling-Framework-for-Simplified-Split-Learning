@@ -32,16 +32,16 @@ class BasicClient(AbstractClient):
         self.input_model = load_model_from_yaml(os.getenv("input_model"))
         self.output_model = load_model_from_yaml(os.getenv("output_model"))
    
-        summary(self.input_model, (1, 28, 28))
-        summary(self.output_model, (100, ))
+        # summary(self.input_model, (1, 28, 28))
+        # summary(self.output_model, (100, ))
 
         self.criterion = nn.CrossEntropyLoss()
 
         lr = float(os.getenv("lr", 0.001))
         momentum = float(os.getenv("momentum", 0.9))
 
-        print(f"lr: {lr}")
-        print(f"momentum: {momentum}")
+        self.logger.info(f"lr: {lr}")
+        self.logger.info(f"momentum: {momentum}")
 
         self.dist_optimizer=  DistributedOptimizer(
                     torch.optim.SGD,
@@ -61,14 +61,17 @@ class BasicClient(AbstractClient):
     def __forward(self, inputs, labels):
         # Input client model
         input_model_activation = self.input_model(inputs) 
+        data_to_server = input_model_activation.element_size() * input_model_activation.numel()
 
         # Server model
         server_model_activation = self.server_ref.rpc_sync().train(input_model_activation)
         # Output client model
+
+        data_to_client = server_model_activation.element_size() * server_model_activation.numel()
         output_model_activation = self.output_model(server_model_activation)
 
         loss = self.criterion(output_model_activation,labels)
-        return output_model_activation, loss
+        return output_model_activation, loss, data_to_server, data_to_client
 
     def __backward(self, context_id, loss):
         dist_autograd.backward(context_id, [loss], False)
@@ -81,10 +84,15 @@ class BasicClient(AbstractClient):
         running_loss = 0.0
         correct = 0
         total = 0
+        total_data_server = 0
+        total_data_client = 0
 
         for inputs, labels in self.train_dataloader:
             with dist_autograd.context() as ctx_id:
-                outputs, loss = self.__forward(inputs, labels)
+                outputs, loss, data_to_server, data_to_client = self.__forward(inputs, labels)
+                total_data_server += data_to_server
+                total_data_client += data_to_client
+
                 self.__backward(ctx_id, loss)
 
                 running_loss += loss.item()
@@ -99,18 +107,20 @@ class BasicClient(AbstractClient):
         loss = running_loss / len(self.train_dataloader)
         accuracy = correct / total
 
-        print(f"Epoch training time: {epoch_training_time}")
-        print(f"Loss: {loss}")
-        print(f"Accuracy: {100 * accuracy:.2f}%")
+        self.logger.info(f"Epoch training time: {epoch_training_time}")
+        self.logger.info(f"Loss: {loss}")
+        self.logger.info(f"Accuracy: {100 * accuracy:.2f}%")
+        self.logger.info(f"Data transmitted to server: {total_data_server/(1024 * 1024)}MB")
+        self.logger.info(f"Data transmitted to client: {total_data_client/(1024 * 1024)}MB")
 
     def set_train(self):
-        print("Training mode - ON")
+        self.logger.info("Training mode - ON")
         self.input_model.train()
         self.server_ref.rpc_sync().set_train()
         self.output_model.train()
 
     def set_eval(self):
-        print("Training mode - OFF")
+        self.logger.info("Training mode - OFF")
         self.input_model.eval()
         self.server_ref.rpc_sync().set_eval()
         self.output_model.eval()
@@ -144,7 +154,7 @@ class BasicClient(AbstractClient):
         return [deepcopy(self.input_model.state_dict()), deepcopy(self.output_model.state_dict())]
 
     def eval(self):
-        print("Evaluation")
+        self.logger.info("Evaluation")
 
         def output_function(inputs):
             activation_alice1 = self.input_model(inputs)
@@ -153,13 +163,13 @@ class BasicClient(AbstractClient):
 
             return outputs
         
-        correct, total = simple_evaluate(self.test_dataloader, output_function)
+        correct, total = simple_evaluate(self.test_dataloader, output_function, self.logger.info)
         return correct, total
 
     def load_data(self):
 
-        self.train_dataloader = torch.load(os.path.join(os.getenv("datapath"), f"train_dataset_{self.client_id}.pt"))
-        self.test_dataloader = torch.load(os.path.join(os.getenv("datapath"), f"test_dataset_{self.client_id}.pt"))
+        self.train_dataloader = torch.load(os.path.join(os.getenv("datapath"), f"train_dataset_cifar_{self.client_id}.pt"))
+        self.test_dataloader = torch.load(os.path.join(os.getenv("datapath"), f"test_dataset_cifar_{self.client_id}.pt"))
         self.iter_dataloader = iter(self.train_dataloader)
         self.batch_number = 0
         self.total_batches = len(self.train_dataloader)

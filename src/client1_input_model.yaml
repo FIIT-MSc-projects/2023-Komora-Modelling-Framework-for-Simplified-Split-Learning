@@ -1,8 +1,28 @@
+# layers:
+#   - Conv2d:
+#       in_channels: 1
+#       out_channels: 32
+#       kernel_size: 3
+#   - ReLU:
+#       inplace: true
+#   - MaxPool2d:
+#       kernel_size: 2
+#       stride: 2
+
 layers:
   - Conv2d:
-      in_channels: 1
-      out_channels: 32
-      kernel_size: 3
+      in_channels: 3
+      out_channels: 6
+      kernel_size: 5
+  - ReLU:
+      inplace: true
+  - MaxPool2d:
+      kernel_size: 2
+      stride: 2
+  - Conv2d:
+      in_channels: 6
+      out_channels: 16
+      kernel_size: 5
   - ReLU:
       inplace: true
   - MaxPool2d:
