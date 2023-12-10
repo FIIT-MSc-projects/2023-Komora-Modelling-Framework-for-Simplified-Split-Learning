@@ -2,10 +2,10 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
-class ResNet(nn.Module):
+class model(nn.Module):
     
     def __init__(self, n=7):
-        super(ResNet, self).__init__()
+        super(model, self).__init__()
         self.conv1 = nn.Conv2d(3, 16, kernel_size=3, stride=1, padding=1)
         self.norm1 = nn.BatchNorm2d(16)
         self.relu1 = nn.ReLU(inplace=True)

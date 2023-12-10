@@ -4,15 +4,15 @@ import time
 import torch.nn as nn
 import torch.optim as optim
 
-from data_handling.data_handling_experiment_1.prepare_mnist_data import load_image_datasets, prepare_data
-from models.experiment1.model import model
+from data_handling.data_handling_experiment_2.prepare_cifar_data import load_image_datasets, prepare_data
+from models.experiment2.model import model
 from splearning.utils.testing import simple_evaluate
 from splearning.utils.training import simple_train
 
-EPOCHS = 5
-BATCH_SIZE = 16
-LOG_FILE_PATH = "../experiment1/reference.log"
-DATA_PATH = "../experiment1/data/"
+EPOCHS = 20
+BATCH_SIZE = 64
+LOG_FILE_PATH = "../experiment2/b/reference.log"
+DATA_PATH = "../experiment2/b/data/"
 
 NET = model()
 

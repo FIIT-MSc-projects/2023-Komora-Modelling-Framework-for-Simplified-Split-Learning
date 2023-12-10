@@ -5,4 +5,4 @@ data/
 /client*/
 /server/
 dist/
-experiment[0-9]/
+experiment[0-9]/*/data/
