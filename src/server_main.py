@@ -1,14 +1,11 @@
 import argparse
 
-import torch
 from models.server_models.resnet_server_model import ResNet
+from models.server_models.simple_server_model import server_model_cifar
 from splearning.server.data_entities.server.basic_server import BasicServer
 from splearning.server.data_entities.client.basic_client import BasicClient
 from splearning.server.data_entities.server.basic_strategy import BasicStrategy
-from splearning.server.data_entities.server.batch_training_strategy import BatchTrainingStrategy
-from splearning.server.data_entities.server.client_2_client_initialization_strategy import Client2ClientInitializationStrategy
 from splearning.server.server import start_server
-from models.server_models.simple_server_model import server_model_cifar, simple_server_model
 from splearning.utils.data_structures import StartServerArguments
 
 if __name__ == "__main__":
@@ -44,7 +41,7 @@ if __name__ == "__main__":
         world_size=params.world_size,
         client_declaration=BasicClient,
         server=BasicServer,
-        server_model=ResNet,
+        server_model=server_model_cifar,
         epochs=params.epochs,
         server_strategy=BasicStrategy,
         clients_configs=clients,

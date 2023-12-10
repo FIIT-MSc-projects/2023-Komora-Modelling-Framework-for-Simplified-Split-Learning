@@ -45,10 +45,10 @@ optimizer = optim.SGD(NET.parameters(), lr=0.001, momentum=0.9)
 total_training_time = 0
 
 for epoch in range(EPOCHS):
-    model.train()
-    total_training_time += simple_train(optimizer, train_dataloader, model, logger.info)
-    model.eval()
-    correct, total = simple_evaluate(test_dataloader, model, logger.info)
+    NET.train()
+    total_training_time += simple_train(optimizer, train_dataloader, NET, logger.info)
+    NET.eval()
+    correct, total = simple_evaluate(test_dataloader, NET, logger.info)
 
 end_time = time.time()
 logger.info(f"Total training time: {total_training_time}")
