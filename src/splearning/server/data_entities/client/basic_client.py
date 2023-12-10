@@ -1,7 +1,6 @@
 
 import time
 import torch.distributed.rpc
-from torchinfo import summary
 import torch
 import torch.nn as nn
 from torch.distributed.rpc import RRef
@@ -11,11 +10,10 @@ import logging
 import os
 import sys
 from copy import deepcopy
-from splearning.client.model_serialization import load_model_from_yaml
-from torch.utils.data import DataLoader
+from splearning.client.deserialization import load_model_from_yaml
 from splearning.utils.data_structures import AbstractClient, ClientArguments
+from splearning.utils.logging import init_logging
 from splearning.utils.testing import simple_evaluate
-from splearning.utils.training import simple_train
 
 
 class BasicClient(AbstractClient):
@@ -31,24 +29,26 @@ class BasicClient(AbstractClient):
 
         self.input_model = load_model_from_yaml(os.getenv("input_model"))
         self.output_model = load_model_from_yaml(os.getenv("output_model"))
-   
-        # summary(self.input_model, (1, 28, 28))
-        # summary(self.output_model, (100, ))
 
+        if self.input_model is None:
+            raise ValueError("Input model not provided")
+        
+        if self.output_model is None:
+            raise ValueError("Output model not provided")
+   
         self.criterion = nn.CrossEntropyLoss()
 
         lr = float(os.getenv("lr", 0.001))
         momentum = float(os.getenv("momentum", 0.9))
-
-        self.logger.info(f"lr: {lr}")
-        self.logger.info(f"momentum: {momentum}")
+        input_refs = list(map(lambda x: RRef(x),self.input_model.parameters()))
+        output_refs = list(map(lambda x: RRef(x),self.output_model.parameters()))
 
         self.dist_optimizer=  DistributedOptimizer(
-                    torch.optim.SGD,
-                    list(map(lambda x: RRef(x),self.output_model.parameters())) +  self.server_model_refs +  list(map(lambda x: RRef(x),self.input_model.parameters())),
-                    lr=lr,
-                    momentum=momentum
-                )
+            optimizer_class=torch.optim.SGD,
+            params_rref=[*output_refs, *self.server_model_refs, *input_refs],
+            lr=lr,
+            momentum=momentum
+        )
 
         self.load_data()
 
@@ -180,25 +180,7 @@ class BasicClient(AbstractClient):
 
     def start_logger(self):
 
-        self.logger = logging.getLogger(f"alice{self.client_id}")
-        self.logger.setLevel(logging.INFO)
-
-        format = logging.Formatter("%(asctime)s: %(message)s")
         log_file_path = os.getenv('log_file')
-
-        if not os.path.isdir(log_file_path):
-            os.makedirs(log_file_path, exist_ok=True)
-
-        fh = logging.FileHandler(filename=f"{log_file_path}/alice{self.client_id}.log",mode='w')
-        fh.setFormatter(format)
-        fh.setLevel(logging.INFO)
-
-        sh = logging.StreamHandler(sys.stdout)
-        sh.setFormatter(format)
-        sh.setLevel(logging.DEBUG)
-
-        self.logger.addHandler(fh)
-        self.logger.addHandler(sh)
-
+        self.logger = init_logging(logger_name=f"alice{self.client_id}", log_file_path=log_file_path)
         self.logger.info("Alice is going insane!")
 

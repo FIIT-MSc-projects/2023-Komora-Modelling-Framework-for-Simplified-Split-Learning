@@ -1,8 +1,5 @@
-import os
 import yaml
 import torch.nn as nn
-import torch
-import collections
 
 LAYER_MAPPING = {
     "Conv1d": nn.Conv1d,
@@ -37,19 +34,14 @@ LAYER_MAPPING = {
     "TransformerDecoder": nn.TransformerDecoder,
 }
 
-def create_layer(layer):
+def load_layer(layer):
     model, params = list(layer.items())[0]
     if params is None:
         params = {}
     return LAYER_MAPPING[model](**params)
 
-def serialize_model(model: nn.Module.__class__, model_path: str):
-    if not os.path.isdir(os.path.dirname(model_path)):
-        os.makedirs(os.path.dirname(model_path), exist_ok=True)    
-    torch.save(model(), model_path)
-
 def create_model(layers):
-    model_layers = [create_layer(layer) for layer in layers]
+    model_layers = [load_layer(layer) for layer in layers]
     model = nn.Sequential(*model_layers)
     return model
 

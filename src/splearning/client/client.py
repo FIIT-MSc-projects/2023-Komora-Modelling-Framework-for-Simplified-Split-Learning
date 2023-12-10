@@ -1,7 +1,6 @@
 import os
 import torch.distributed.rpc as rpc
 
-from splearning.client.model_serialization import load_model_from_yaml, serialize_model
 from splearning.utils.data_structures import StartClientArguments
 
 

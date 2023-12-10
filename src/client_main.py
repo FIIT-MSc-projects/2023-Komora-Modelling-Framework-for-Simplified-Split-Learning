@@ -4,7 +4,6 @@ from dotenv import load_dotenv
 from data_handling.data_handling_experiment_3.prepare_cifar_data_split import get_dataset_memory_size, prepare_data, load_image_datasets
 
 from splearning.client.client import start_client
-from data_handling.mnist_flat_generator import load_mnist_image
 from models.client_models.client_input_model import input_model
 from models.client_models.client_output_model import output_model
 from splearning.utils.data_structures import StartClientArguments, dotdict
