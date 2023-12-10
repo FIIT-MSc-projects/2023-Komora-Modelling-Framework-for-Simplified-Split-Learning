@@ -1,7 +1,7 @@
 import os
 import argparse
 from dotenv import load_dotenv
-from data_handling_experiment_2.prepare_cifar_data_split import get_dataset_memory_size, prepare_data, load_image_datasets
+from data_handling_experiment_3.prepare_cifar_data_split import get_dataset_memory_size, prepare_data, load_image_datasets
 
 from splearning.client.client import start_client
 from data_handling.mnist_flat_generator import load_mnist_image
@@ -46,5 +46,5 @@ if __name__ == "__main__":
     train_dataset, test_dataset = load_image_datasets(os.getenv("datapath"), rank=int(args.rank), clients_total=int(args.clients))
     print(f"Training dataset size: {get_dataset_memory_size(train_dataset) / (1024*1024)} MB")
     print(f"Testing dataset size: {get_dataset_memory_size(test_dataset) / (1024*1024)} MB")
-    prepare_data(train_dataset, test_dataset, int(args.clients), int(args.rank), os.getenv("datapath"), 64)
+    prepare_data(train_dataset, test_dataset, int(args.clients), int(args.rank), os.getenv("datapath"), 128)
     start_client(client_args)
