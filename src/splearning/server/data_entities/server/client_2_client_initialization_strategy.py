@@ -1,12 +1,8 @@
 import os
-import sys
-import logging
-from threading import Thread
-import torch.multiprocessing as mp
 import torch.distributed.rpc as rpc
-import torch.distributed.autograd as dist_autograd
 from splearning.utils.data_structures import AbstractServerStrategy
 from splearning.utils.data_structures import ClientArguments
+from splearning.utils.logging import init_logging
 
 class Client2ClientInitializationStrategy(AbstractServerStrategy):
     def __init__(self):
@@ -67,26 +63,7 @@ class Client2ClientInitializationStrategy(AbstractServerStrategy):
         return clients
 
     def __init_logger(self):
-        self.logger = logging.getLogger("Server")
-        self.logger.setLevel(logging.INFO)
-
-        format = logging.Formatter("%(asctime)s: %(message)s")
         log_file_path = os.getenv('log_file')
-
-        print(log_file_path)
-
-        if not os.path.isdir(log_file_path):
-            os.makedirs(log_file_path, exist_ok=True)
-
-        fh = logging.FileHandler(filename=f"{log_file_path}/server.log", mode='w')
-        fh.setFormatter(format)
-        fh.setLevel(logging.INFO)
-
-        sh = logging.StreamHandler(sys.stdout)
-        sh.setFormatter(format)
-        sh.setLevel(logging.DEBUG)
-
-        self.logger.addHandler(fh)
-        self.logger.addHandler(sh)
+        self.logger = init_logging(logger_name="server", log_file_path=log_file_path)
         self.logger.info("Starting server logging")
 

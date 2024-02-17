@@ -1,0 +1,14 @@
+2023-12-15 09:24:13,974: Alice is going insane!
+2023-12-15 09:24:14,985: Local Data Statistics:
+2023-12-15 09:24:14,985: Dataset Size: 6250.00
+2023-12-15 09:24:14,986: Training mode - ON
+2023-12-15 09:24:14,988: Training epoch
+2023-12-15 09:25:43,981: Epoch training time: 88.99316501617432
+2023-12-15 09:25:43,982: Loss: 1.9016490690231322
+2023-12-15 09:25:43,982: Accuracy: 29.15%
+2023-12-15 09:25:43,982: Data transmitted to server: 38.14697265625MB
+2023-12-15 09:25:43,982: Data transmitted to client: 8.0108642578125MB
+2023-12-15 09:25:43,982: Training mode - OFF
+2023-12-15 09:25:43,982: Evaluation
+2023-12-15 09:25:46,969: Validation Loss: 1.6364484174728393
+2023-12-15 09:25:46,969: Validation Accuracy: 39.80%

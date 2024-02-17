@@ -10,6 +10,9 @@ import logging
 import os
 import sys
 from copy import deepcopy
+
+from torchinfo import summary
+from models.experiment1.model import input_model
 from splearning.client.deserialization import load_model_from_yaml
 from splearning.utils.data_structures import AbstractClient, ClientArguments
 from splearning.utils.logging import init_logging
@@ -32,6 +35,7 @@ class BasicClient(AbstractClient):
 
         if self.input_model is None:
             raise ValueError("Input model not provided")
+        
         
         if self.output_model is None:
             raise ValueError("Output model not provided")

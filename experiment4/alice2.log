@@ -1,0 +1,243 @@
+2023-12-11 17:32:16,220: Alice is going insane!
+2023-12-11 17:32:17,109: Local Data Statistics:
+2023-12-11 17:32:17,109: Dataset Size: 196.00
+2023-12-11 17:35:42,660: Transfering weights from Alice1 to Alice2
+2023-12-11 17:35:42,693: Training mode - ON
+2023-12-11 17:35:42,705: Training epoch
+2023-12-11 17:38:55,551: Epoch training time: 192.84605264663696
+2023-12-11 17:38:55,552: Loss: 1.620423104081835
+2023-12-11 17:38:55,553: Accuracy: 39.28%
+2023-12-11 17:38:55,553: Data transmitted to server: 1562.5MB
+2023-12-11 17:38:55,553: Data transmitted to client: 6.103515625MB
+2023-12-11 17:38:55,553: Training mode - OFF
+2023-12-11 17:38:55,555: Evaluation
+2023-12-11 17:39:04,671: Validation Loss: 1.497775211930275
+2023-12-11 17:39:04,672: Validation Accuracy: 44.52%
+2023-12-11 17:42:29,344: Transfering weights from Alice1 to Alice2
+2023-12-11 17:42:29,347: Training mode - ON
+2023-12-11 17:42:29,349: Training epoch
+2023-12-11 17:45:51,323: Epoch training time: 201.97436332702637
+2023-12-11 17:45:51,323: Loss: 1.3798091460247428
+2023-12-11 17:45:51,323: Accuracy: 49.36%
+2023-12-11 17:45:51,323: Data transmitted to server: 1562.5MB
+2023-12-11 17:45:51,323: Data transmitted to client: 6.103515625MB
+2023-12-11 17:45:51,323: Training mode - OFF
+2023-12-11 17:45:51,327: Evaluation
+2023-12-11 17:46:00,448: Validation Loss: 1.3652912884950639
+2023-12-11 17:46:00,448: Validation Accuracy: 50.38%
+2023-12-11 17:49:42,781: Transfering weights from Alice1 to Alice2
+2023-12-11 17:49:42,785: Training mode - ON
+2023-12-11 17:49:42,787: Training epoch
+2023-12-11 17:53:57,059: Epoch training time: 254.27224135398865
+2023-12-11 17:53:57,059: Loss: 1.2087111433549804
+2023-12-11 17:53:57,059: Accuracy: 56.14%
+2023-12-11 17:53:57,059: Data transmitted to server: 1562.5MB
+2023-12-11 17:53:57,060: Data transmitted to client: 6.103515625MB
+2023-12-11 17:53:57,060: Training mode - OFF
+2023-12-11 17:53:57,121: Evaluation
+2023-12-11 17:54:09,739: Validation Loss: 1.267440801858902
+2023-12-11 17:54:09,740: Validation Accuracy: 55.12%
+2023-12-11 17:57:29,648: Transfering weights from Alice1 to Alice2
+2023-12-11 17:57:29,652: Training mode - ON
+2023-12-11 17:57:29,653: Training epoch
+2023-12-11 18:00:46,330: Epoch training time: 196.67681860923767
+2023-12-11 18:00:46,331: Loss: 1.0920759038049348
+2023-12-11 18:00:46,331: Accuracy: 60.68%
+2023-12-11 18:00:46,331: Data transmitted to server: 1562.5MB
+2023-12-11 18:00:46,331: Data transmitted to client: 6.103515625MB
+2023-12-11 18:00:46,331: Training mode - OFF
+2023-12-11 18:00:46,332: Evaluation
+2023-12-11 18:00:55,432: Validation Loss: 1.2893278568983078
+2023-12-11 18:00:55,432: Validation Accuracy: 54.10%
+2023-12-11 18:04:19,432: Transfering weights from Alice1 to Alice2
+2023-12-11 18:04:19,462: Training mode - ON
+2023-12-11 18:04:19,463: Training epoch
+2023-12-11 18:07:35,650: Epoch training time: 196.1866044998169
+2023-12-11 18:07:35,650: Loss: 1.0006988574655689
+2023-12-11 18:07:35,650: Accuracy: 64.02%
+2023-12-11 18:07:35,651: Data transmitted to server: 1562.5MB
+2023-12-11 18:07:35,651: Data transmitted to client: 6.103515625MB
+2023-12-11 18:07:35,651: Training mode - OFF
+2023-12-11 18:07:35,652: Evaluation
+2023-12-11 18:07:44,815: Validation Loss: 1.1340748563408851
+2023-12-11 18:07:44,816: Validation Accuracy: 58.94%
+2023-12-11 18:11:37,111: Transfering weights from Alice1 to Alice2
+2023-12-11 18:11:37,117: Training mode - ON
+2023-12-11 18:11:37,119: Training epoch
+2023-12-11 18:15:18,733: Epoch training time: 221.61318612098694
+2023-12-11 18:15:18,733: Loss: 0.9333876371383667
+2023-12-11 18:15:18,733: Accuracy: 66.14%
+2023-12-11 18:15:18,733: Data transmitted to server: 1562.5MB
+2023-12-11 18:15:18,733: Data transmitted to client: 6.103515625MB
+2023-12-11 18:15:18,733: Training mode - OFF
+2023-12-11 18:15:18,770: Evaluation
+2023-12-11 18:15:29,339: Validation Loss: 1.1329431265592576
+2023-12-11 18:15:29,339: Validation Accuracy: 59.62%
+2023-12-11 18:19:02,162: Transfering weights from Alice1 to Alice2
+2023-12-11 18:19:02,167: Training mode - ON
+2023-12-11 18:19:02,168: Training epoch
+2023-12-11 18:22:17,986: Epoch training time: 195.81771063804626
+2023-12-11 18:22:17,986: Loss: 0.874117839093111
+2023-12-11 18:22:17,986: Accuracy: 68.62%
+2023-12-11 18:22:17,986: Data transmitted to server: 1562.5MB
+2023-12-11 18:22:17,987: Data transmitted to client: 6.103515625MB
+2023-12-11 18:22:17,987: Training mode - OFF
+2023-12-11 18:22:17,988: Evaluation
+2023-12-11 18:22:27,472: Validation Loss: 0.9799083769321442
+2023-12-11 18:22:27,473: Validation Accuracy: 64.38%
+2023-12-11 18:26:03,831: Transfering weights from Alice1 to Alice2
+2023-12-11 18:26:03,836: Training mode - ON
+2023-12-11 18:26:03,837: Training epoch
+2023-12-11 18:29:20,438: Epoch training time: 196.60131812095642
+2023-12-11 18:29:20,439: Loss: 0.8225494167026208
+2023-12-11 18:29:20,439: Accuracy: 70.59%
+2023-12-11 18:29:20,439: Data transmitted to server: 1562.5MB
+2023-12-11 18:29:20,439: Data transmitted to client: 6.103515625MB
+2023-12-11 18:29:20,439: Training mode - OFF
+2023-12-11 18:29:20,440: Evaluation
+2023-12-11 18:29:29,676: Validation Loss: 0.8995977088809013
+2023-12-11 18:29:29,676: Validation Accuracy: 67.98%
+2023-12-11 18:32:56,383: Transfering weights from Alice1 to Alice2
+2023-12-11 18:32:56,421: Training mode - ON
+2023-12-11 18:32:56,423: Training epoch
+2023-12-11 18:36:17,110: Epoch training time: 200.68747997283936
+2023-12-11 18:36:17,111: Loss: 0.7723246028228682
+2023-12-11 18:36:17,111: Accuracy: 72.62%
+2023-12-11 18:36:17,111: Data transmitted to server: 1562.5MB
+2023-12-11 18:36:17,111: Data transmitted to client: 6.103515625MB
+2023-12-11 18:36:17,111: Training mode - OFF
+2023-12-11 18:36:17,112: Evaluation
+2023-12-11 18:36:26,305: Validation Loss: 0.8748987138271331
+2023-12-11 18:36:26,305: Validation Accuracy: 68.64%
+2023-12-11 18:39:50,343: Transfering weights from Alice1 to Alice2
+2023-12-11 18:39:50,382: Training mode - ON
+2023-12-11 18:39:50,383: Training epoch
+2023-12-11 18:43:08,596: Epoch training time: 198.21287536621094
+2023-12-11 18:43:08,596: Loss: 0.7266877640266808
+2023-12-11 18:43:08,596: Accuracy: 74.12%
+2023-12-11 18:43:08,596: Data transmitted to server: 1562.5MB
+2023-12-11 18:43:08,596: Data transmitted to client: 6.103515625MB
+2023-12-11 18:43:08,596: Training mode - OFF
+2023-12-11 18:43:08,597: Evaluation
+2023-12-11 18:43:17,727: Validation Loss: 0.905760706961155
+2023-12-11 18:43:17,727: Validation Accuracy: 67.92%
+2023-12-11 18:46:42,852: Transfering weights from Alice1 to Alice2
+2023-12-11 18:46:42,857: Training mode - ON
+2023-12-11 18:46:42,858: Training epoch
+2023-12-11 18:50:09,754: Epoch training time: 206.89625525474548
+2023-12-11 18:50:09,754: Loss: 0.693960755303198
+2023-12-11 18:50:09,755: Accuracy: 75.27%
+2023-12-11 18:50:09,755: Data transmitted to server: 1562.5MB
+2023-12-11 18:50:09,755: Data transmitted to client: 6.103515625MB
+2023-12-11 18:50:09,755: Training mode - OFF
+2023-12-11 18:50:09,756: Evaluation
+2023-12-11 18:50:18,761: Validation Loss: 0.7759669244289398
+2023-12-11 18:50:18,761: Validation Accuracy: 73.56%
+2023-12-11 18:53:42,605: Transfering weights from Alice1 to Alice2
+2023-12-11 18:53:42,608: Training mode - ON
+2023-12-11 18:53:42,609: Training epoch
+2023-12-11 18:56:58,137: Epoch training time: 195.5271601676941
+2023-12-11 18:56:58,137: Loss: 0.6498425099618581
+2023-12-11 18:56:58,137: Accuracy: 77.16%
+2023-12-11 18:56:58,137: Data transmitted to server: 1562.5MB
+2023-12-11 18:56:58,137: Data transmitted to client: 6.103515625MB
+2023-12-11 18:56:58,137: Training mode - OFF
+2023-12-11 18:56:58,138: Evaluation
+2023-12-11 18:57:07,294: Validation Loss: 0.7516638778150082
+2023-12-11 18:57:07,294: Validation Accuracy: 73.32%
+2023-12-11 19:00:27,653: Transfering weights from Alice1 to Alice2
+2023-12-11 19:00:27,656: Training mode - ON
+2023-12-11 19:00:27,657: Training epoch
+2023-12-11 19:03:38,657: Epoch training time: 190.99982333183289
+2023-12-11 19:03:38,657: Loss: 0.6229902042114005
+2023-12-11 19:03:38,657: Accuracy: 77.96%
+2023-12-11 19:03:38,657: Data transmitted to server: 1562.5MB
+2023-12-11 19:03:38,657: Data transmitted to client: 6.103515625MB
+2023-12-11 19:03:38,657: Training mode - OFF
+2023-12-11 19:03:38,658: Evaluation
+2023-12-11 19:03:47,614: Validation Loss: 0.747027125954628
+2023-12-11 19:03:47,614: Validation Accuracy: 74.04%
+2023-12-11 19:07:06,811: Transfering weights from Alice1 to Alice2
+2023-12-11 19:07:06,853: Training mode - ON
+2023-12-11 19:07:06,858: Training epoch
+2023-12-11 19:10:17,723: Epoch training time: 190.86407709121704
+2023-12-11 19:10:17,723: Loss: 0.5919268633029899
+2023-12-11 19:10:17,723: Accuracy: 79.41%
+2023-12-11 19:10:17,723: Data transmitted to server: 1562.5MB
+2023-12-11 19:10:17,723: Data transmitted to client: 6.103515625MB
+2023-12-11 19:10:17,723: Training mode - OFF
+2023-12-11 19:10:17,724: Evaluation
+2023-12-11 19:10:26,676: Validation Loss: 0.7619398474693299
+2023-12-11 19:10:26,676: Validation Accuracy: 73.48%
+2023-12-11 19:13:46,585: Transfering weights from Alice1 to Alice2
+2023-12-11 19:13:46,623: Training mode - ON
+2023-12-11 19:13:46,624: Training epoch
+2023-12-11 19:16:57,892: Epoch training time: 191.2672860622406
+2023-12-11 19:16:57,892: Loss: 0.5706602762244186
+2023-12-11 19:16:57,892: Accuracy: 79.84%
+2023-12-11 19:16:57,892: Data transmitted to server: 1562.5MB
+2023-12-11 19:16:57,892: Data transmitted to client: 6.103515625MB
+2023-12-11 19:16:57,892: Training mode - OFF
+2023-12-11 19:16:57,893: Evaluation
+2023-12-11 19:17:06,835: Validation Loss: 0.786301589012146
+2023-12-11 19:17:06,835: Validation Accuracy: 72.44%
+2023-12-11 19:20:24,653: Transfering weights from Alice1 to Alice2
+2023-12-11 19:20:24,656: Training mode - ON
+2023-12-11 19:20:24,657: Training epoch
+2023-12-11 19:23:32,412: Epoch training time: 187.7552683353424
+2023-12-11 19:23:32,412: Loss: 0.5520225111014989
+2023-12-11 19:23:32,412: Accuracy: 80.48%
+2023-12-11 19:23:32,412: Data transmitted to server: 1562.5MB
+2023-12-11 19:23:32,412: Data transmitted to client: 6.103515625MB
+2023-12-11 19:23:32,412: Training mode - OFF
+2023-12-11 19:23:32,414: Evaluation
+2023-12-11 19:23:41,337: Validation Loss: 0.6823011323809623
+2023-12-11 19:23:41,337: Validation Accuracy: 76.46%
+2023-12-11 19:27:01,661: Transfering weights from Alice1 to Alice2
+2023-12-11 19:27:01,663: Training mode - ON
+2023-12-11 19:27:01,664: Training epoch
+2023-12-11 19:30:12,126: Epoch training time: 190.46138095855713
+2023-12-11 19:30:12,126: Loss: 0.5316751891252945
+2023-12-11 19:30:12,126: Accuracy: 81.49%
+2023-12-11 19:30:12,126: Data transmitted to server: 1562.5MB
+2023-12-11 19:30:12,126: Data transmitted to client: 6.103515625MB
+2023-12-11 19:30:12,126: Training mode - OFF
+2023-12-11 19:30:12,128: Evaluation
+2023-12-11 19:30:21,046: Validation Loss: 0.7456126168370247
+2023-12-11 19:30:21,046: Validation Accuracy: 74.50%
+2023-12-11 19:33:36,947: Transfering weights from Alice1 to Alice2
+2023-12-11 19:33:36,985: Training mode - ON
+2023-12-11 19:33:36,987: Training epoch
+2023-12-11 19:36:45,814: Epoch training time: 188.82746648788452
+2023-12-11 19:36:45,814: Loss: 0.5118047865677853
+2023-12-11 19:36:45,814: Accuracy: 81.88%
+2023-12-11 19:36:45,814: Data transmitted to server: 1562.5MB
+2023-12-11 19:36:45,814: Data transmitted to client: 6.103515625MB
+2023-12-11 19:36:45,815: Training mode - OFF
+2023-12-11 19:36:45,816: Evaluation
+2023-12-11 19:36:54,731: Validation Loss: 0.7264729127287864
+2023-12-11 19:36:54,732: Validation Accuracy: 75.14%
+2023-12-11 19:40:11,973: Transfering weights from Alice1 to Alice2
+2023-12-11 19:40:11,976: Training mode - ON
+2023-12-11 19:40:11,977: Training epoch
+2023-12-11 19:43:18,656: Epoch training time: 186.6781883239746
+2023-12-11 19:43:18,656: Loss: 0.49197312474859006
+2023-12-11 19:43:18,656: Accuracy: 82.76%
+2023-12-11 19:43:18,656: Data transmitted to server: 1562.5MB
+2023-12-11 19:43:18,656: Data transmitted to client: 6.103515625MB
+2023-12-11 19:43:18,656: Training mode - OFF
+2023-12-11 19:43:18,657: Evaluation
+2023-12-11 19:43:27,604: Validation Loss: 0.6772753618657589
+2023-12-11 19:43:27,605: Validation Accuracy: 76.84%
+2023-12-11 19:46:42,940: Transfering weights from Alice1 to Alice2
+2023-12-11 19:46:42,943: Training mode - ON
+2023-12-11 19:46:42,944: Training epoch
+2023-12-11 19:49:51,085: Epoch training time: 188.1400215625763
+2023-12-11 19:49:51,085: Loss: 0.47515383332359545
+2023-12-11 19:49:51,085: Accuracy: 83.44%
+2023-12-11 19:49:51,085: Data transmitted to server: 1562.5MB
+2023-12-11 19:49:51,085: Data transmitted to client: 6.103515625MB
+2023-12-11 19:49:51,085: Training mode - OFF
+2023-12-11 19:49:51,086: Evaluation
+2023-12-11 19:50:00,037: Validation Loss: 0.7011812403798103
+2023-12-11 19:50:00,037: Validation Accuracy: 75.88%

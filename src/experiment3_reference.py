@@ -4,7 +4,8 @@ import time
 import torch.nn as nn
 import torch.optim as optim
 
-from data_handling.data_handling_experiment_1.prepare_mnist_data import load_image_datasets, prepare_data
+from data_handling.data_handling_experiment_3.prepare_cifar_data import load_image_datasets, prepare_data
+from data_handling.data_handling_experiment_3.prepare_cifar_data_split import get_dataset_memory_size
 from models.experiment3.model import model
 from splearning.utils.testing import simple_evaluate
 from splearning.utils.training import simple_train
@@ -38,6 +39,9 @@ train_dataloader, test_dataloader = prepare_data(train_dataset, test_dataset, BA
 
 logger.info(f"Training dataset size: {len(train_dataset)}")
 logger.info(f"Testing dataset size: {len(test_dataset)}")
+
+print(f"Training dataset size: {get_dataset_memory_size(train_dataset) / (1024*1024)} MB")
+print(f"Testing dataset size: {get_dataset_memory_size(test_dataset) / (1024*1024)} MB")
 
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(NET.parameters(), lr=0.001, momentum=0.9)

@@ -1,10 +1,11 @@
 import argparse
 
 from models.server_models.resnet_server_model import ResNet
-from models.server_models.simple_server_model import server_model_cifar
+from models.server_models.simple_server_model import server_model_cifar, simple_server_model
 from splearning.server.data_entities.server.basic_server import BasicServer
 from splearning.server.data_entities.client.basic_client import BasicClient
 from splearning.server.data_entities.server.basic_strategy import BasicStrategy
+from splearning.server.data_entities.server.client_2_client_initialization_strategy import Client2ClientInitializationStrategy
 from splearning.server.server import start_server
 from splearning.utils.data_structures import StartServerArguments
 

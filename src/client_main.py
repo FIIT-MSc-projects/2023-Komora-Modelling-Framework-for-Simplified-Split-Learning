@@ -1,7 +1,8 @@
 import os
 import argparse
 from dotenv import load_dotenv
-from data_handling.data_handling_experiment_2.prepare_cifar_data_split import get_dataset_memory_size, prepare_data, load_image_datasets
+# from data_handling.data_handling_experiment_3.prepare_cifar_data_split import get_dataset_memory_size, prepare_data, load_image_datasets
+from data_handling.data_handling_experiment_2.prepare_cifar_data_split import prepare_data, load_image_datasets, get_dataset_memory_size
 
 from splearning.client.client import start_client
 from splearning.utils.data_structures import StartClientArguments, dotdict
