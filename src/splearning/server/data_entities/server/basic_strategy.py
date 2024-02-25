@@ -4,10 +4,14 @@ from splearning.utils.data_structures import AbstractServerStrategy
 from splearning.utils.data_structures import ClientArguments
 from splearning.utils.logging import init_logging
 
+global image_plotted
+image_plotted = False
+
 class BasicStrategy(AbstractServerStrategy):
     def __init__(self):
         self.__init_logger()
         self.last_alice_id = None
+        self.image_counter = 0
 
     def execute_train_model(self, model, x):
         return model(x)  

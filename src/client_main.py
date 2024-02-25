@@ -2,7 +2,8 @@ import os
 import argparse
 from dotenv import load_dotenv
 # from data_handling.data_handling_experiment_3.prepare_cifar_data_split import get_dataset_memory_size, prepare_data, load_image_datasets
-from data_handling.data_handling_experiment_2.prepare_cifar_data_split import prepare_data, load_image_datasets, get_dataset_memory_size
+# from data_handling.data_handling_experiment_2.prepare_cifar_data_split import prepare_data, load_image_datasets, get_dataset_memory_size
+from data_handling.data_handling_experiment_1.prepare_mnist_data_split import prepare_data, load_image_datasets
 
 from splearning.client.client import start_client
 from splearning.utils.data_structures import StartClientArguments, dotdict
@@ -39,8 +40,9 @@ if __name__ == "__main__":
     )
 
     # load_mnist_image(data_args)
-    train_dataset, test_dataset = load_image_datasets(os.getenv("datapath"), rank=int(args.rank), clients_total=int(args.clients))
-    print(f"Training dataset size: {get_dataset_memory_size(train_dataset) / (1024*1024)} MB")
-    print(f"Testing dataset size: {get_dataset_memory_size(test_dataset) / (1024*1024)} MB")
-    prepare_data(train_dataset, test_dataset, int(args.clients), int(args.rank), os.getenv("datapath"), 4)
+    train_dataset, test_dataset = load_image_datasets(os.getenv("datapath"), shape=(28, 28), rank=int(args.rank), clients_total=int(args.clients))
+    # train_dataset, test_dataset = load_image_datasets(os.getenv("datapath"), rank=int(args.rank), clients_total=int(args.clients))
+    # print(f"Training dataset size: {get_dataset_memory_size(train_dataset) / (1024*1024)} MB")
+    # print(f"Testing dataset size: {get_dataset_memory_size(test_dataset) / (1024*1024)} MB")
+    prepare_data(train_dataset, test_dataset, int(args.rank), os.getenv("datapath"), 16)
     start_client(client_args)

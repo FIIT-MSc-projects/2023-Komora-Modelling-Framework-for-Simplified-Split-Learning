@@ -42,7 +42,7 @@ if __name__ == "__main__":
         world_size=params.world_size,
         client_declaration=BasicClient,
         server=BasicServer,
-        server_model=server_model_cifar,
+        server_model=simple_server_model,
         epochs=params.epochs,
         server_strategy=BasicStrategy,
         clients_configs=clients,

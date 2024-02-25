@@ -28,7 +28,6 @@ def load_image_datasets(datapath, shape, rank, clients_total, *transform_list):
 def prepare_data(
         train_dataset: Dataset,
         test_dataset: Dataset,
-        clients_total: int, 
         rank: int, 
         datapath: str, 
         batch_size=16):

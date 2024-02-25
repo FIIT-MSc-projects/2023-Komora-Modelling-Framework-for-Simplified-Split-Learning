@@ -10,6 +10,8 @@ import logging
 import os
 import sys
 from copy import deepcopy
+import matplotlib.pyplot as plt
+
 
 from torchinfo import summary
 from models.experiment1.model import input_model
@@ -55,6 +57,7 @@ class BasicClient(AbstractClient):
         )
 
         self.load_data()
+        self.image_counter = 0
 
     def update_model(self,last_alice_rref,last_alice_id):
         self.logger.info(f"Transfering weights from Alice{last_alice_id} to Alice{self.client_id}")
@@ -62,9 +65,39 @@ class BasicClient(AbstractClient):
         self.input_model.load_state_dict(model1_weights)
         self.output_model.load_state_dict(model2_weights)
 
+    def plot_activations(self, x, path):
+        try: 
+            fig = plt.figure(figsize=(30, 50))
+
+            # feature_map = x[0].squeeze(0)
+            feature_map = x[0]
+            print(feature_map.shape)
+            gray_scale = torch.sum(feature_map, 0)
+            gray_scale = gray_scale / feature_map.shape[1]
+            processed = (gray_scale.data.cpu().numpy())
+
+            print(f"Shape: {processed.shape}")
+
+            a = fig.add_subplot(5, 4, 1)
+            a.axis("off")
+            plt.imshow(processed)
+            plt.savefig(str(f'{path}{self.image_counter}.jpg'), bbox_inches='tight')
+            return processed
+        except Exception as e:
+            print(e)
+            pass
+
+
     def __forward(self, inputs, labels):
         # Input client model
+        
+
         input_model_activation = self.input_model(inputs) 
+
+        if os.getenv("plot_images") is not None and self.image_counter < 100:
+            self.image_counter += 1
+            x1 = self.plot_activations(inputs, os.getenv("image_path_client"))
+            x2 = self.plot_activations(input_model_activation, os.getenv("image_path_server"))
         data_to_server = input_model_activation.element_size() * input_model_activation.numel()
 
         # Server model
@@ -172,8 +205,8 @@ class BasicClient(AbstractClient):
 
     def load_data(self):
 
-        self.train_dataloader = torch.load(os.path.join(os.getenv("datapath"), f"train_dataset_cifar_{self.client_id}.pt"))
-        self.test_dataloader = torch.load(os.path.join(os.getenv("datapath"), f"test_dataset_cifar_{self.client_id}.pt"))
+        self.train_dataloader = torch.load(os.path.join(os.getenv("datapath"), f"{os.getenv('train_dataset_name')}_{self.client_id}.pt"))
+        self.test_dataloader = torch.load(os.path.join(os.getenv("datapath"), f"{os.getenv('test_dataset_name')}_{self.client_id}.pt"))
         self.iter_dataloader = iter(self.train_dataloader)
         self.batch_number = 0
         self.total_batches = len(self.train_dataloader)

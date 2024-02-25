@@ -39,7 +39,6 @@ def get_dataset_memory_size(dataset):
 def prepare_data(
         train_dataset: Dataset,
         test_dataset: Dataset,
-        clients_total: int, 
         rank: int, 
         datapath: str, 
         batch_size):
@@ -52,8 +51,8 @@ def prepare_data(
     batched_test_dataset = DataLoader(test_dataset, batch_size=batch_size)
 
     # Save the entire MNIST dataset using torch.save
-    torch.save(batched_train_dataset, os.path.join(datapath,f"train_dataset_cifar_{rank}.pt"))
-    torch.save(batched_test_dataset, os.path.join(datapath,f"test_dataset_cifar_{rank}.pt"))
+    torch.save(batched_train_dataset, os.path.join(datapath,f"{os.getenv('train_dataset_name')}_{rank}.pt"))
+    torch.save(batched_test_dataset, os.path.join(datapath,f"{os.getenv('test_dataset_name')}_{rank}.pt"))
 
 
 
