@@ -2,6 +2,7 @@ import argparse
 
 from models.server_models.resnet_server_model import ResNet
 from models.server_models.simple_server_model import server_model_cifar, simple_server_model
+from models.server_models.transformer_model import model
 from splearning.server.data_entities.server.basic_server import BasicServer
 from splearning.server.data_entities.client.basic_client import BasicClient
 from splearning.server.data_entities.server.basic_strategy import BasicStrategy
@@ -42,7 +43,7 @@ if __name__ == "__main__":
         world_size=params.world_size,
         client_declaration=BasicClient,
         server=BasicServer,
-        server_model=simple_server_model,
+        server_model=model,
         epochs=params.epochs,
         server_strategy=BasicStrategy,
         clients_configs=clients,

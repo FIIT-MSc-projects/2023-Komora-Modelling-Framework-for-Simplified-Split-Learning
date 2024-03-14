@@ -44,5 +44,5 @@ if __name__ == "__main__":
     # train_dataset, test_dataset = load_image_datasets(os.getenv("datapath"), rank=int(args.rank), clients_total=int(args.clients))
     # print(f"Training dataset size: {get_dataset_memory_size(train_dataset) / (1024*1024)} MB")
     # print(f"Testing dataset size: {get_dataset_memory_size(test_dataset) / (1024*1024)} MB")
-    prepare_data(train_dataset, test_dataset, int(args.rank), os.getenv("datapath"), 16)
+    prepare_data(train_dataset, test_dataset, int(args.rank), os.getenv("datapath"), 128)
     start_client(client_args)

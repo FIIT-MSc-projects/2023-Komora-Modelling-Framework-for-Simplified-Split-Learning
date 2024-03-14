@@ -35,6 +35,9 @@ class BasicClient(AbstractClient):
         self.input_model = load_model_from_yaml(os.getenv("input_model"))
         self.output_model = load_model_from_yaml(os.getenv("output_model"))
 
+        summary(self.input_model)
+        summary(self.output_model)
+
         if self.input_model is None:
             raise ValueError("Input model not provided")
         
@@ -45,15 +48,16 @@ class BasicClient(AbstractClient):
         self.criterion = nn.CrossEntropyLoss()
 
         lr = float(os.getenv("lr", 0.001))
-        momentum = float(os.getenv("momentum", 0.9))
+        print(lr)
+        # momentum = float(os.getenv("momentum", 0.9))
         input_refs = list(map(lambda x: RRef(x),self.input_model.parameters()))
         output_refs = list(map(lambda x: RRef(x),self.output_model.parameters()))
 
         self.dist_optimizer=  DistributedOptimizer(
-            optimizer_class=torch.optim.SGD,
+            optimizer_class=torch.optim.Adam,
             params_rref=[*output_refs, *self.server_model_refs, *input_refs],
-            lr=lr,
-            momentum=momentum
+            lr=lr
+            # momentum=momentum
         )
 
         self.load_data()

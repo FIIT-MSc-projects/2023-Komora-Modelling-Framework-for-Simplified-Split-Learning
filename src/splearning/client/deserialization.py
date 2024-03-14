@@ -1,5 +1,9 @@
+import os
+import sys
 import yaml
 import torch.nn as nn
+import importlib
+
 
 LAYER_MAPPING = {
     "Conv1d": nn.Conv1d,
@@ -48,7 +52,27 @@ def create_model(layers):
 
 def load_model_from_yaml(path):
     with open(path, 'r') as file:
-        client_config = yaml.safe_load(file)
-        model = create_model(client_config["layers"])
+        config = yaml.safe_load(file)
 
+        if config.get("customCode") is not None:
+            module_path = config["customCode"]["modulePath"]
+            module_name = config["customCode"]["moduleName"]
+            params = config["customCode"]["constructorParams"]
+
+
+            sys.path.append(module_path)
+            module = importlib.import_module(module_name, package=module_path)
+
+            try:
+                model = module.model(**params)
+            except AttributeError:
+                sys.stderr("Model could not be loaded. Function or class named `model` must be provided")
+                sys.exit()
+
+        elif config.get("layers") is not None:
+            model = create_model(config["layers"])
+
+
+        if model is None:
+            raise ValueError("Model can not be None")
         return model

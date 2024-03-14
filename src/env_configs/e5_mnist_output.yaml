@@ -1,0 +1,6 @@
+layers:
+    - Linear:
+        in_features: 8
+        out_features: 10
+    - Softmax:
+        dim: -1
