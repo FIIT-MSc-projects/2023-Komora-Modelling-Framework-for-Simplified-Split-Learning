@@ -40,6 +40,7 @@ if __name__ == "__main__":
     )
 
     # load_mnist_image(data_args)
+    print(os.getenv("datapath"))
     train_dataset, test_dataset = load_image_datasets(os.getenv("datapath"), shape=(28, 28), rank=int(args.rank), clients_total=int(args.clients))
     # train_dataset, test_dataset = load_image_datasets(os.getenv("datapath"), rank=int(args.rank), clients_total=int(args.clients))
     # print(f"Training dataset size: {get_dataset_memory_size(train_dataset) / (1024*1024)} MB")

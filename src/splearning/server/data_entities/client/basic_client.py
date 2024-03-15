@@ -1,4 +1,5 @@
 
+import json
 import time
 import torch.distributed.rpc
 import torch
@@ -6,15 +7,12 @@ import torch.nn as nn
 from torch.distributed.rpc import RRef
 import torch.distributed.autograd as dist_autograd
 from torch.distributed.optim import DistributedOptimizer
-import logging
 import os
-import sys
 from copy import deepcopy
 import matplotlib.pyplot as plt
 
 
 from torchinfo import summary
-from models.experiment1.model import input_model
 from splearning.client.deserialization import load_model_from_yaml
 from splearning.utils.data_structures import AbstractClient, ClientArguments
 from splearning.utils.logging import init_logging
@@ -45,19 +43,19 @@ class BasicClient(AbstractClient):
         if self.output_model is None:
             raise ValueError("Output model not provided")
    
-        self.criterion = nn.CrossEntropyLoss()
-
-        lr = float(os.getenv("lr", 0.001))
-        print(lr)
-        # momentum = float(os.getenv("momentum", 0.9))
         input_refs = list(map(lambda x: RRef(x),self.input_model.parameters()))
         output_refs = list(map(lambda x: RRef(x),self.output_model.parameters()))
+        
+        self.criterion = getattr(torch.nn, os.getenv("loss"))()
 
-        self.dist_optimizer=  DistributedOptimizer(
-            optimizer_class=torch.optim.Adam,
+        optimizer_params = json.loads(os.getenv("optimizer_params"))
+        optimizer_class_name = os.getenv("optimizer_name")
+        optimizer_class = getattr(torch.optim, optimizer_class_name)
+
+        self.dist_optimizer = DistributedOptimizer(
+            optimizer_class=optimizer_class,
             params_rref=[*output_refs, *self.server_model_refs, *input_refs],
-            lr=lr
-            # momentum=momentum
+            **optimizer_params
         )
 
         self.load_data()

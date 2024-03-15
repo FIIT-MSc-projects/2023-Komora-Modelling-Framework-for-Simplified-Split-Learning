@@ -1,0 +1,10 @@
+2024-03-15 15:41:25,142: Starting server logging
+2024-03-15 15:41:25,143: Starting the initialization of the array of clients
+2024-03-15 15:41:25,144: Train Request for client with id: 1
+2024-03-15 15:42:52,504: Train Request for client with id: 2
+2024-03-15 15:44:22,113: Train Request for client with id: 1
+2024-03-15 15:45:52,128: Train Request for client with id: 2
+2024-03-15 15:47:18,780: Train Request for client with id: 1
+2024-03-15 15:48:47,731: Train Request for client with id: 2
+2024-03-15 15:50:18,077: Train Request for client with id: 1
+2024-03-15 15:51:45,130: Train Request for client with id: 2

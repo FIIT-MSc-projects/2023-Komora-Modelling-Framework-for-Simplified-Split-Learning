@@ -45,9 +45,6 @@ def parse_log_file(log_file_path):
 
 if __name__ == "__main__":
     log_file_paths = [
-        "../client1/alice1.log",
-        "../client2/alice2.log",
-        "../experiment4/reference.log",
         "../experiment4/reference_half_dataset.log"
     ]
 
