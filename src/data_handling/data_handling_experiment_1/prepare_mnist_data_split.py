@@ -41,6 +41,8 @@ def prepare_data(
     torch.save(batched_train_dataset, os.path.join(datapath,f"train_dataset_{rank}.pt"))
     torch.save(batched_test_dataset, os.path.join(datapath,f"test_dataset_{rank}.pt"))
 
+    return batched_train_dataset, batched_test_dataset
+
 
 
 

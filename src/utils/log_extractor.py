@@ -45,38 +45,16 @@ def parse_log_file(log_file_path):
 
 if __name__ == "__main__":
     log_file_paths = [
-        "../experiment1/reference.log",
-        "../experiment1/split/alice1.log",
-        "../experiment1/split/alice2.log",
-        "../experiment2/a/reference.log",
-        "../experiment2/a/split/alice1.log",
-        "../experiment2/a/split/alice2.log",
-        "../experiment2/b/reference.log",
-        "../experiment2/b/split/alice1.log",
-        "../experiment2/b/split/alice2.log",
-        "../experiment3/reference_augment.log",
-        "../experiment3/split/alice1.log",
-        "../experiment3/split/alice2.log"
-    ]
-    csv_log_file_paths = [
-        "../csv_logs/experiment1_ref.log",
-        "../csv_logs/experiment1_alice1.log",
-        "../csv_logs/experiment1_alice2.log",
-        "../csv_logs/experiment2a_ref.log",
-        "../csv_logs/experiment2a_alice1.log",
-        "../csv_logs/experiment2a_alice2.log",
-        "../csv_logs/experiment2b_ref.log",
-        "../csv_logs/experiment2b_alice1.log",
-        "../csv_logs/experiment2b_alice2.log",
-        "../csv_logs/experiment3_ref.log",
-        "../csv_logs/experiment3_alice1.log",
-        "../csv_logs/experiment3_alice2.log",
+        "../client1/alice1.log",
+        "../client2/alice2.log",
+        "../experiment4/reference.log",
+        "../experiment4/reference_half_dataset.log"
     ]
 
     for log_file_path in log_file_paths:
         extracted_data = parse_log_file(log_file_path)
         csv_content = ""
-        with open("../csv_logs/experiments.csv", 'a') as file:
+        with open("../csv_logs/experiment4.csv", 'a') as file:
             file.write(log_file_path.split("/")[-1] + "\n")
             for entry in extracted_data:
                 file.write(entry + ":," + ",".join(extracted_data[entry]) + "\n")

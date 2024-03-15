@@ -10,13 +10,13 @@ import torch.nn as nn
 from torch.optim import Adam
 from torch.nn import CrossEntropyLoss
 
-from data_handling.data_handling_experiment_1.prepare_mnist_data import load_image_datasets, prepare_data
+from data_handling.data_handling_experiment_1.prepare_mnist_data_split import load_image_datasets, prepare_data
 
 
 EPOCHS = 20
 BATCH_SIZE = 16
-LOG_FILE_PATH = "../experiment5/reference.log"
-DATA_PATH = "../experiment5/data/"
+LOG_FILE_PATH = "../experiment4/reference_half_dataset.log"
+DATA_PATH = "../experiment4/data/"
 
 logger = logging.getLogger(f"reference")
 logger.setLevel(logging.INFO)
@@ -177,8 +177,11 @@ class MyViT(nn.Module):
 
 def main():
 
-    train_dataset, test_dataset = load_image_datasets(DATA_PATH, shape=(28, 28))
-    train_loader, test_loader = prepare_data(train_dataset, test_dataset, BATCH_SIZE)
+    # train_dataset, test_dataset = load_image_datasets(DATA_PATH, shape=(28, 28))
+    # train_loader, test_loader = prepare_data(train_dataset, test_dataset, BATCH_SIZE)
+
+    train_dataset, test_dataset = load_image_datasets(DATA_PATH, shape=(28, 28), rank=1, clients_total=2)
+    train_loader, test_loader = prepare_data(train_dataset, test_dataset, 1, DATA_PATH, BATCH_SIZE)
 
     # Defining model and training options
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

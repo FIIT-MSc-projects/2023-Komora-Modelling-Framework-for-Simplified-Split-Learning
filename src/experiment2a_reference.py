@@ -5,7 +5,7 @@ import torch.nn as nn
 import torch.optim as optim
 
 from data_handling.data_handling_experiment_2.prepare_cifar_data import load_image_datasets, prepare_data
-from models.experiment2.model import model
+from models.experiment_references.experiment2.model import model
 from splearning.utils.testing import simple_evaluate
 from splearning.utils.training import simple_train
 

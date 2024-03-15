@@ -6,7 +6,7 @@ import torch.optim as optim
 
 from data_handling.data_handling_experiment_3.prepare_cifar_data import load_image_datasets, prepare_data
 from data_handling.data_handling_experiment_3.prepare_cifar_data_split import get_dataset_memory_size
-from models.experiment3.model import model
+from models.experiment_references.experiment3.model import model
 from splearning.utils.testing import simple_evaluate
 from splearning.utils.training import simple_train
 
