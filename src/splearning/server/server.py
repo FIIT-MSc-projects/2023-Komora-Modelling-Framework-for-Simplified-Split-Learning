@@ -32,7 +32,6 @@ def start_server(args: StartServerArguments):
     load_dotenv(args.get_config())
     
     init_env(port=args.get_port(), address=args.get_host())
-    dist.init_process_group(backend='gloo', rank=0, world_size=world_size)
     rpc.init_rpc(name="bob", rank=0, world_size=world_size)
 
     server_args = ServerArguments(
