@@ -1,4 +1,5 @@
 from splearning.utils.data_structures import AbstractServer, ServerArguments, ServerArguments, StartServerArguments
+import torch.distributed as dist
 import torch.distributed.rpc as rpc
 import os
 
@@ -31,7 +32,8 @@ def start_server(args: StartServerArguments):
     load_dotenv(args.get_config())
     
     init_env(port=args.get_port(), address=args.get_host())
-    rpc.init_rpc("bob", backend="gloo", rank=0, world_size=world_size)
+    dist.init_process_group(backend='gloo', rank=0, world_size=world_size)
+    rpc.init_rpc(name="bob", rank=0, world_size=world_size)
 
     server_args = ServerArguments(
         client_num_in_total=args.get_client_num_in_total(),

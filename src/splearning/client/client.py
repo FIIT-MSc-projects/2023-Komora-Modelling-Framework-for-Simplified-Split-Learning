@@ -1,5 +1,6 @@
 import os
 import torch.distributed.rpc as rpc
+import torch.distributed as dist
 from torch.distributed import TCPStore, init_process_group
 
 from splearning.utils.data_structures import StartClientArguments
@@ -14,5 +15,6 @@ def start_client(args: StartClientArguments):
     print(f"Starting client {args.get_name()}{args.get_rank()}")
     init_env(args.get_port(), args.get_address())
 
-    rpc.init_rpc(backend="gloo", name=f"{args.get_name()}{args.get_rank()}", rank=args.get_rank(), world_size=args.get_world_size())
+    dist.init_process_group(backend='gloo', rank=args.get_rank(), world_size=args.get_world_size())
+    rpc.init_rpc(name=f"{args.get_name()}{args.get_rank()}", rank=args.get_rank(), world_size=args.get_world_size())
     rpc.shutdown()
