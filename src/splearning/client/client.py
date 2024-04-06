@@ -16,15 +16,18 @@ def start_client(args: StartClientArguments):
     print(f"Starting client {args.get_name()}{args.get_rank()}")
     init_env(args.get_port(), args.get_address())
 
-    print(os.environ["LOCAL_RANK"])
-    os.environ["LOCAL_RANK"] = str(args.get_rank())
+    os.environ["RANK"] = str(args.get_rank())
     os.environ["WORLD_SIZE"] = str(args.get_world_size())
+
+    print("ENVIRON: ", os.environ)
 
     # dist.init_process_group(rank=args.get_rank(), world_size=args.get_world_size(), init_method='tcp://147.175.145.55:8888')
     # options = rpc.RpcBackendOptions(init_method='env://', rpc_timeout=1000)
-    init_process_group(
-        # backend="nccl", init_method="env://"
-        backend="nccl", init_method="tcp://147.175.145.55:8888", rank=args.get_rank(), world_size=args.get_world_size()
-    )
+    # init_process_group(
+    #     backend="gloo", init_method="env://"
+    #     # backend="gloo", init_method="tcp://147.175.145.55:8888", rank=args.get_rank(), world_size=args.get_world_size()
+    # )
+
+    # print("WORLD_SIZE: ", args.get_world_size())
     rpc.init_rpc(name=f"{args.get_name()}{args.get_rank()}", rank=args.get_rank(), world_size=args.get_world_size())#, rpc_backend_options=options)
     rpc.shutdown()

@@ -16,7 +16,7 @@ if __name__ == "__main__":
     parser.add_argument('--world_size',type=int,default=3,help='The world size which is equal to 1 server + (world size - 1) clients')
     parser.add_argument('--port',type=str,default="8888",help='master port')
     parser.add_argument('--host',type=str,default="localhost",help='master hostname')    
-    parser.add_argument('--config',type=str,default="/home/miso/School/year5/DP/split_learning_framework/src/server.env",help='config file path')
+    parser.add_argument('--config',type=str,default="/home/miso/School/year5/DP/split_learning_framework/src/env_configs/server.env",help='config file path')
     parser.add_argument('--epochs',type=int,default=1,help='number of training epochs')
     params = parser.parse_args()
 
