@@ -32,7 +32,17 @@ def start_server(args: StartServerArguments):
     load_dotenv(args.get_config())
     
     init_env(port=args.get_port(), address=args.get_host())
-    rpc.init_rpc(name="bob", rank=0, world_size=world_size)
+    
+    rpc.init_rpc(
+        name="bob", 
+        rank=0, 
+        world_size=world_size,
+        backend=rpc.BackendType.TENSORPIPE,
+        rpc_backend_options=rpc.TensorPipeRpcBackendOptions(
+            num_worker_threads=8,
+            rpc_timeout=20 # 20 second timeout
+        )
+    )
 
     server_args = ServerArguments(
         client_num_in_total=args.get_client_num_in_total(),
