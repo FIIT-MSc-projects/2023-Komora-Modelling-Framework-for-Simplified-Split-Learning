@@ -35,6 +35,7 @@ def start_client(args: StartClientArguments):
         world_size=args.get_world_size(),
         backend=rpc.BackendType.TENSORPIPE,
         rpc_backend_options=rpc.TensorPipeRpcBackendOptions(
+            init_method=f"tcp://{args.get_address()}:{args.get_port()}",
             num_worker_threads=8,
             rpc_timeout=20 # 20 second timeout
         )
