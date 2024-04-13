@@ -38,7 +38,7 @@ def start_server(args: StartServerArguments):
         rank=0, 
         world_size=world_size,
         rpc_backend_options=rpc.TensorPipeRpcBackendOptions(
-            device_maps={"bob": "cpu"}
+            devices=['cpu']
         )
         # backend=rpc.BackendType.TENSORPIPE,
         # rpc_backend_options=rpc.TensorPipeRpcBackendOptions(
