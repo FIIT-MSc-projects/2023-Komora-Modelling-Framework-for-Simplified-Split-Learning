@@ -36,7 +36,10 @@ def start_server(args: StartServerArguments):
     rpc.init_rpc(
         name="bob", 
         rank=0, 
-        world_size=world_size
+        world_size=world_size,
+        rpc_backend_options=rpc.TensorPipeRpcBackendOptions(
+            device_map={"bob": "cpu"}
+        )
         # backend=rpc.BackendType.TENSORPIPE,
         # rpc_backend_options=rpc.TensorPipeRpcBackendOptions(
         #     init_method=f"tcp://{args.get_host()}:{args.get_port()}",
