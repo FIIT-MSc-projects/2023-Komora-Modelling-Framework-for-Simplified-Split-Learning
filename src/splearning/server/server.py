@@ -36,13 +36,13 @@ def start_server(args: StartServerArguments):
     rpc.init_rpc(
         name="bob", 
         rank=0, 
-        world_size=world_size,
-        backend=rpc.BackendType.TENSORPIPE,
-        rpc_backend_options=rpc.TensorPipeRpcBackendOptions(
-            init_method=f"tcp://{args.get_host()}:{args.get_port()}",
-            num_worker_threads=8,
-            rpc_timeout=20 # 20 second timeout
-        )
+        world_size=world_size
+        # backend=rpc.BackendType.TENSORPIPE,
+        # rpc_backend_options=rpc.TensorPipeRpcBackendOptions(
+        #     init_method=f"tcp://{args.get_host()}:{args.get_port()}",
+        #     num_worker_threads=8,
+        #     rpc_timeout=20 # 20 second timeout
+        # )
     )
 
     server_args = ServerArguments(

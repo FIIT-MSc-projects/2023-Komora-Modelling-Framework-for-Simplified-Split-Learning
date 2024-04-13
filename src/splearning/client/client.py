@@ -16,7 +16,7 @@ def start_client(args: StartClientArguments):
     print(f"Starting client {args.get_name()}{args.get_rank()}")
     init_env(args.get_port(), args.get_address())
 
-    os.environ["RANK"] = str(args.get_rank())
+    os.environ["LOCAL_RANK"] = str(args.get_rank())
     os.environ["WORLD_SIZE"] = str(args.get_world_size())
 
     print("ENVIRON: ", os.environ)
