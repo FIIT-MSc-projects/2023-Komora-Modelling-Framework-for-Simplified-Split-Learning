@@ -1,6 +1,6 @@
 customCode:
   moduleName: "transformer_declaration"
-  modulePath: "/home/miso/School/year5/DP/split_learning_framework/src/yaml_configs/"
+  modulePath: "yaml_configs/"
   constructorParams:
     chw: [1, 28, 28]
     n_patches: 7
