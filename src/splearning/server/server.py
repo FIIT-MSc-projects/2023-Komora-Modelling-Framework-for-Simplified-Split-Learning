@@ -36,15 +36,7 @@ def start_server(args: StartServerArguments):
     rpc.init_rpc(
         name="bob", 
         rank=0, 
-        world_size=world_size,
-        # rpc_backend_options=rpc.TensorPipeRpcBackendOptions(
-        #     devices=['cpu']
-        # )
-        # backend=rpc.BackendType.TENSORPIPE,
-        rpc_backend_options=rpc.TensorPipeRpcBackendOptions(
-            num_worker_threads=8,
-            rpc_timeout=20 # 20 second timeout
-        )
+        world_size=world_size
     )
 
     server_args = ServerArguments(
