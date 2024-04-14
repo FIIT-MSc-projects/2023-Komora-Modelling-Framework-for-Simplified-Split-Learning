@@ -10,6 +10,8 @@ def init_logging(logger_name, log_file_path):
 
     format = logging.Formatter("%(asctime)s: %(message)s")
 
+    print("LOG FILE PATH: ", log_file_path)
+
     if not os.path.isdir(log_file_path):
         os.makedirs(log_file_path, exist_ok=True)
 
