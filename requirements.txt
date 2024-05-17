@@ -1,0 +1,83 @@
+backports.tarfile==1.1.0
+Bottleneck @ file:///work/ci_py311/bottleneck_1676827011612/work
+brotlipy==0.7.0
+build==1.0.3
+certifi @ file:///croot/certifi_1707229174982/work/certifi
+cffi @ file:///work/ci_py311/cffi_1676822533496/work
+charset-normalizer @ file:///tmp/build/80754af9/charset-normalizer_1630003229654/work
+click @ file:///work/ci_py311/click_1676825163161/work
+contourpy @ file:///croot/contourpy_1700583582875/work
+cryptography @ file:///croot/cryptography_1689373676338/work
+cycler @ file:///tmp/build/80754af9/cycler_1637851556182/work
+docutils==0.21.1
+filelock @ file:///work/ci_py311/filelock_1676823024085/work
+flwr==1.5.0
+fonttools==4.25.0
+gmpy2 @ file:///work/ci_py311/gmpy2_1676839849213/work
+grpcio==1.58.0
+idna @ file:///work/ci_py311/idna_1676822698822/work
+importlib_metadata==7.1.0
+iterators==0.0.2
+jaraco.classes==3.4.0
+jaraco.context==5.3.0
+jaraco.functools==4.0.1
+jeepney==0.8.0
+Jinja2 @ file:///work/ci_py311/jinja2_1676823587943/work
+joblib @ file:///croot/joblib_1685113087166/work
+keyring==25.1.0
+kiwisolver @ file:///work/ci_py311/kiwisolver_1676827230232/work
+markdown-it-py==3.0.0
+MarkupSafe @ file:///work/ci_py311/markupsafe_1676823507015/work
+matplotlib @ file:///croot/matplotlib-suite_1698692105134/work
+mdurl==0.1.2
+mkl-fft==1.3.6
+mkl-random @ file:///work/mkl/mkl_random_1682950433854/work
+mkl-service==2.4.0
+more-itertools==10.2.0
+mpmath @ file:///croot/mpmath_1690848262763/work
+munkres==1.1.4
+networkx @ file:///croot/networkx_1690561992265/work
+nh3==0.2.17
+numexpr @ file:///croot/numexpr_1683221822650/work
+numpy @ file:///croot/numpy_and_numpy_base_1691091611330/work
+packaging @ file:///croot/packaging_1693575174725/work
+pandas @ file:///croot/pandas_1692289311655/work
+Pillow==9.4.0
+pkginfo==1.10.0
+ply==3.11
+protobuf==3.20.3
+pycparser @ file:///tmp/build/80754af9/pycparser_1636541352034/work
+pycryptodome==3.19.0
+Pygments==2.17.2
+pyOpenSSL @ file:///croot/pyopenssl_1690223430423/work
+pyparsing @ file:///work/ci_py311/pyparsing_1677811559502/work
+pyproject_hooks==1.0.0
+PyQt5==5.15.10
+PyQt5-sip @ file:///croot/pyqt-split_1698769088074/work/pyqt_sip
+PySocks @ file:///work/ci_py311/pysocks_1676822712504/work
+python-dateutil @ file:///tmp/build/80754af9/python-dateutil_1626374649649/work
+python-dotenv @ file:///work/ci_py311/python-dotenv_1676842320650/work
+pytz @ file:///work/ci_py311/pytz_1676825004346/work
+PyYAML @ file:///croot/pyyaml_1698096049011/work
+readme_renderer==43.0
+requests @ file:///croot/requests_1690400202158/work
+requests-toolbelt==1.0.0
+rfc3986==2.0.0
+rich==13.7.1
+scikit-learn @ file:///croot/scikit-learn_1684954695550/work
+scipy @ file:///croot/scipy_1691606680890/work/dist/scipy-1.11.1-cp311-cp311-linux_x86_64.whl#sha256=ba491c7d30a02bb93027e90b0aa58c0fe8d1e0fc3ddfe3469178740bd150aa45
+SecretStorage==3.3.3
+sip @ file:///croot/sip_1698675935381/work
+six @ file:///tmp/build/80754af9/six_1644875935023/work
+sympy @ file:///work/ci_py311_2/sympy_1679339311852/work
+threadpoolctl @ file:///Users/ktietz/demo/mc3/conda-bld/threadpoolctl_1629802263681/work
+torch @ file:///croot/pytorch_1686931851744/work
+torchinfo==1.8.0
+torchvision @ file:///croot/torchvision_1689078161692/work
+tornado @ file:///croot/tornado_1696936946304/work
+tqdm @ file:///croot/tqdm_1679561862951/work
+twine==5.0.0
+typing_extensions @ file:///croot/typing_extensions_1690297465030/work
+tzdata @ file:///croot/python-tzdata_1690578112552/work
+urllib3 @ file:///croot/urllib3_1686163155763/work
+zipp==3.18.1
